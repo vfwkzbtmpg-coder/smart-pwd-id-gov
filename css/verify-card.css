@@ -1,0 +1,311 @@
+/* ============================================================
+   SMART PWD ID — VERIFICATION RESULT CARD
+   The full Digital ID Card as a third party sees it after a QR
+   scan or an NFC tap. Ported from the admin console card
+   (admin-react/src/components/DigitalIdCard.css) so the person
+   checking an ID sees the real photo, LGU background, signature
+   and emergency details instead of a placeholder.
+
+   Everything is scoped to #verifyCard / .vresult so the design's
+   generic names (.vcard, .vfield, .vphoto …) cannot leak into the
+   rest of the site. Lengths use cqw so the card keeps the same
+   proportions at any panel width.
+   ============================================================ */
+
+.vresult {
+  width: 100%;
+  display: grid;
+  gap: 18px;
+  text-align: left;
+  animation: vresult-in .5s cubic-bezier(.22,.8,.2,1) both;
+}
+
+@keyframes vresult-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Verified header ---------- */
+
+.vresult .vhead {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.vresult .vtick {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #16a06a, #08784a);
+  box-shadow: 0 12px 26px rgba(8,120,74,.32);
+}
+
+.vresult .vtick svg {
+  width: 40px;
+  height: 40px;
+  fill: #fff;
+  animation: vtick-pop .45s cubic-bezier(.2,1.5,.4,1) both;
+}
+
+@keyframes vtick-pop {
+  from { transform: scale(.2); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Two rings that keep rippling outwards, so the result reads as "live". */
+.vresult .vring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(8,120,74,.5);
+  animation: vring-out 2.6s ease-out infinite;
+}
+
+.vresult .vring:nth-child(2) { animation-delay: 1.3s; }
+
+@keyframes vring-out {
+  0% { transform: scale(1); opacity: .65; }
+  100% { transform: scale(1.85); opacity: 0; }
+}
+
+.vresult .vhead h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.vresult .vsub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.vresult .vmeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.vresult .vpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.vresult .vpill b { color: var(--text); font-weight: 800; }
+
+body.dark-mode .vresult .vpill { background: #101c2e; border-color: #22344d; }
+
+/* ---------- Card shell ---------- */
+
+#verifyCard {
+  container-type: inline-size;
+  width: 100%;
+  display: grid;
+  gap: clamp(14px, 2.6cqw, 26px);
+}
+
+#verifyCard, #verifyCard * { box-sizing: border-box; }
+
+#verifyCard .vcard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.586;
+  overflow: hidden;
+  border-radius: clamp(12px, 2.4cqw, 22px);
+  border: 1px solid #cbd5e1;
+  background: #fff center/100% 100% no-repeat;
+  box-shadow: 0 18px 42px rgba(7,26,51,.22);
+  transition: transform .35s cubic-bezier(.2,.75,.25,1), box-shadow .35s ease;
+}
+
+#verifyCard .vcard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 55px rgba(7,26,51,.3);
+}
+
+/* Matches the console card: a light veil keeps printed text legible over the
+   LGU artwork, which is what the card is designed against. */
+#verifyCard .vcard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,.18);
+  pointer-events: none;
+}
+
+#verifyCard .vcard > * { position: relative; z-index: 1; }
+
+/* ---------- Front ---------- */
+
+#verifyCard .vcard-front { padding: clamp(10px, 1.8cqw, 18px); }
+
+#verifyCard .vcontent {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(78px, 29%) minmax(0, 1fr);
+  gap: clamp(9px, 2.3cqw, 25px);
+  align-items: center;
+}
+
+#verifyCard .vleft {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: clamp(7px, 1.5cqw, 15px);
+  height: 100%;
+  min-height: 0;
+  align-items: center;
+}
+
+#verifyCard .vphoto {
+  width: 92%;
+  justify-self: center;
+  aspect-ratio: .82;
+  max-height: 90%;
+  align-self: center;
+  border: 2px solid #222;
+  border-radius: clamp(7px, 1.5cqw, 15px);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #f5f5f5;
+  color: #777;
+  font-size: clamp(8px, 1.4cqw, 12px);
+  font-weight: 700;
+  text-align: center;
+}
+
+#verifyCard .vphoto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+#verifyCard .vsig {
+  text-align: center;
+  font-size: clamp(8px, 1.25cqw, 12px);
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+#verifyCard .vsigline {
+  height: clamp(18px, 3cqw, 35px);
+  border-bottom: 1.5px solid #111;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#verifyCard .vsigline span { font-size: clamp(7px, 1cqw, 10px); color: #888; font-weight: 500; letter-spacing: 0; }
+#verifyCard .vsigline img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+#verifyCard .vfields { display: grid; gap: clamp(9px, 2cqw, 22px); min-width: 0; }
+
+#verifyCard .vfield {
+  display: grid;
+  grid-template-columns: minmax(88px, 42%) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(5px, 1cqw, 12px);
+  min-width: 0;
+}
+
+#verifyCard .vfield label { font-size: clamp(8px, 1.55cqw, 15px); font-weight: 800; line-height: 1.15; }
+
+#verifyCard .vvalue {
+  min-width: 0;
+  border-bottom: 1.5px solid #222;
+  padding: 0 2px 4px;
+  text-align: center;
+  font-weight: 800;
+  font-size: clamp(9px, 1.9cqw, 19px);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+#verifyCard .vvalue.vsmall { font-size: clamp(8px, 1.55cqw, 16px); }
+
+/* ---------- Back ---------- */
+
+#verifyCard .vcard-back {
+  padding: clamp(11px, 2.5cqw, 28px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: clamp(7px, 1.5cqw, 16px);
+}
+
+#verifyCard .vnotice {
+  text-align: center;
+  font-weight: 900;
+  color: #9d1b1b;
+  font-size: clamp(8px, 1.2cqw, 13px);
+  line-height: 1.4;
+  letter-spacing: .02em;
+  background: #fff;
+  padding: clamp(4px, 1cqw, 8px) clamp(6px, 1.5cqw, 14px);
+  border-radius: 6px;
+}
+
+#verifyCard .vbackbox {
+  border: 1.5px solid #333;
+  border-radius: 12px;
+  padding: clamp(9px, 2cqw, 22px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(8px, 1.4cqw, 14px);
+  min-height: 0;
+}
+
+#verifyCard .vbacktitle { text-align: center; font-weight: 900; font-size: clamp(10px, 2cqw, 20px); }
+
+#verifyCard .vbackfields {
+  display: grid;
+  align-content: center;
+  gap: clamp(6px, 1.4cqw, 14px);
+  font-size: clamp(9px, 1.5cqw, 15px);
+  min-width: 0;
+}
+
+#verifyCard .vbackfield { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px; min-width: 0; }
+#verifyCard .vbackfield span { border-bottom: 1px solid #555; min-width: 0; overflow-wrap: anywhere; }
+
+#verifyCard .vauth { text-align: center; font-weight: 800; font-size: clamp(8px, 1.3cqw, 13px); }
+
+/* ---------- Small screens ---------- */
+
+@container (max-width: 520px) {
+  #verifyCard .vcard-front { padding: 7px; }
+  #verifyCard .vcontent { grid-template-columns: 25% minmax(0, 1fr); gap: 7px; }
+  #verifyCard .vleft { gap: 5px; }
+  #verifyCard .vphoto { width: 92%; border-width: 1px; border-radius: 6px; }
+  #verifyCard .vfields { gap: clamp(5px, 1.7cqw, 9px); }
+  #verifyCard .vfield { grid-template-columns: minmax(62px, 40%) minmax(0, 1fr); gap: 4px; }
+  #verifyCard .vfield label { font-size: clamp(7px, 1.8cqw, 9px); }
+  #verifyCard .vvalue { font-size: clamp(8px, 2.2cqw, 11px); padding-bottom: 2px; border-bottom-width: 1px; }
+  #verifyCard .vvalue.vsmall { font-size: clamp(7px, 1.9cqw, 10px); }
+  #verifyCard .vsig { font-size: 7px; }
+  #verifyCard .vsigline { height: 13px; }
+  #verifyCard .vcard-back { padding: 7px; gap: 5px; }
+  #verifyCard .vbackbox { padding: 7px; gap: 7px; }
+  #verifyCard .vbackfields { gap: 4px; font-size: clamp(7px, 2cqw, 10px); }
+  .vresult .vtick { width: 62px; height: 62px; }
+  .vresult .vtick svg { width: 32px; height: 32px; }
+  .vresult .vhead h2 { font-size: 21px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vresult, .vresult .vtick svg { animation: none; }
+  .vresult .vring { animation: none; opacity: 0; }
+  #verifyCard .vcard { transition: none; }
+}
