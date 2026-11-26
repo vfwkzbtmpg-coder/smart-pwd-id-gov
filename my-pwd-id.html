@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Smart PWD ID | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .verification-state { display:block; margin-top:5px; color:#64748b; font-size:12px; line-height:1.4; }
+    .verification-actions { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:9px; }
+    .verification-actions button:disabled { opacity:.55; cursor:wait; }
+    .remove-nfc-button { border-color:#fecaca !important; color:#b42318 !important; }
+    .remove-nfc-button:hover { background:#fff1f2 !important; }
+    .verification-error { color:#b42318; }
+    .verification-success { color:#08784a; }
+    .verification-warning { color:#9a6700; }
+    .pwd-qr-panel { display:flex; align-items:center; gap:18px; margin:8px 0 4px; padding:16px; border:1px solid #e2e8f0; border-radius:14px; background:#f8fafc; }
+    .pwd-qr-panel[hidden] { display:none; }
+    .pwd-qr-canvas { width:160px; height:160px; flex:0 0 160px; display:grid; place-items:center; border:8px solid #fff; border-radius:12px; box-shadow:0 4px 14px rgba(15,23,42,.08); background:#fff; }
+    .pwd-qr-canvas img,.pwd-qr-canvas canvas { display:block; max-width:100%; max-height:100%; }
+    .pwd-qr-copy { display:grid; gap:7px; }
+    .pwd-qr-copy strong { color:#1e3a5f; }
+    .pwd-qr-copy small { color:#64748b; line-height:1.45; }
+    @media(max-width:560px) { .verification-actions { justify-content:flex-start; } }
+    @media(max-width:560px) { .pwd-qr-panel { align-items:flex-start; gap:12px; padding:12px; } .pwd-qr-canvas { width:124px; height:124px; flex-basis:124px; border-width:6px; } }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="top">
+
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span>
+        <strong>Smart PWD ID</strong>
+        <small>Cardholder Portal</small>
+      </span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a
+        class="active"
+        href="dashboard.html"
+        aria-current="page"
+      >Dashboard</a>
+      <a href="verify.html">Verify</a>
+      <a href="index.html">Home</a>
+    </nav>
+
+    <button
+      type="button"
+      class="access settings-trigger"
+      data-access
+      aria-label="Open Settings"
+    >
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+
+  </header>
+
+  <!-- NOTIFICATION TOAST ANCHOR -->
+  <div
+    id="toast-root"
+    class="toast-root"
+    aria-live="polite"
+    aria-atomic="true"
+    role="region"
+    aria-label="Notifications"
+  ></div>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="profile" >
+        <div class="photo" aria-hidden="true"><img class="profile-photo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=professional%20ID%20photo%20portrait%20of%20a%20smiling%20young%20filipino%20woman%20with%20dark%20hair%20wearing%20black%20blazer%20white%20collar%20shirt%20neutral%20gray%20background%20formal%20government%20ID%20style%20passport%20photo&image_size=square_hd" alt="User profile photo"></div>
+        <b></b>
+        <small>PWD Cardholder</small>
+      </div>
+
+      <nav
+        class="sidebar-nav"
+        aria-label="Cardholder navigation"
+      >
+        <a
+          href="dashboard.html"
+        >
+          <span aria-hidden="true">▦</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="my-pwd-id.html" class="selected" aria-current="page">
+          <span aria-hidden="true">▣</span>
+          <span>My Smart PWD ID</span>
+        </a>
+        <a href="benefits.html">
+          <span aria-hidden="true">⌁</span>
+          <span>Benefits</span>
+        </a>
+        <a href="transactions.html">
+          <span aria-hidden="true">◷</span>
+          <span>Transactions</span>
+        </a>
+        <button
+          type="button"
+          class="sidebar-button"
+          data-access
+          aria-label="Open Settings"
+        >
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+        <a
+          class="sign-out"
+          href="index.html"
+        >
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <section class="dash">
+
+      <div class="dashhead">
+        <div>
+          <span class="eyebrow">DIGITAL CARD</span>
+          <h1>My Smart PWD ID</h1>
+          <p>This is your digital PWD ID. Present this for verification at authorized establishments.</p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panelhead">
+          <h3>Verification Methods</h3>
+        </div>
+        <p>Enable or disable verification methods for your Smart PWD ID.</p>
+        
+        <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-icon">▦</span>
+              <div>
+                <b>QR Code Verification</b>
+                <small>Allow establishments to scan your QR code.</small>
+                <small class="verification-state" id="qrMethodStatus" role="status" aria-live="polite">Loading setting…</small>
+              </div>
+            </div>
+            <button class="switch on" id="qrToggle" aria-label="Toggle QR Code Verification" aria-pressed="true" disabled><i></i></button>
+        </div>
+        <div class="pwd-qr-panel" id="pwdQrPanel" hidden>
+          <div class="pwd-qr-canvas" id="pwdQrCanvas" aria-label="Your PWD ID QR code"></div>
+          <div class="pwd-qr-copy">
+            <strong>Your PWD ID QR code</strong>
+            <small id="pwdQrStatus" role="status" aria-live="polite">Preparing your secure verification code…</small>
+            <button class="btn light" id="downloadPwdQr" type="button" disabled>Download QR Code</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-icon">◉</span>
+              <div>
+                <b>NFC Verification</b>
+                <small>Allow contactless verification via NFC tap.</small>
+                <small class="verification-state" id="nfcMethodStatus" role="status" aria-live="polite">Loading setting…</small>
+                <small class="verification-state" id="nfcCardStatus" role="status" aria-live="polite"></small>
+              </div>
+            </div>
+            <div class="verification-actions">
+              <button class="switch on" id="nfcToggle" aria-label="Toggle NFC Verification" aria-pressed="true" disabled><i></i></button>
+              <button class="btn light remove-nfc-button" id="removeNfcCard" type="button" hidden>Remove lost NFC card</button>
+            </div>
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <!-- Global JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+      var SUPABASE_ANON_KEY =
+        'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+      }
+    })();
+  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function () {
+      function toastCssReady() {
+        return !!document.querySelector(".toast, #toast-root");
+      }
+      let toastTimer = null;
+      function dismissToast() {
+        const r = document.getElementById("toast-root");
+        if (!r) return;
+        r.innerHTML = "";
+        if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+      }
+      function showToast(props) {
+        const root = document.getElementById("toast-root");
+        if (!root) return;
+        dismissToast();
+        const title = props.title || "Notice";
+        const message = props.message || "";
+        const tone = (props.tone === "success" || props.tone === "error" || props.tone === "warning") ? props.tone : "info";
+        const actions = Array.isArray(props.actions) ? props.actions : [];
+        const auto = typeof props.autoDismissMs === "number" ? props.autoDismissMs : 0;
+        const icon = tone === "success" ? "✅" : tone === "error" || tone === "warning" ? "⚠" : "ⓘ";
+        const toast = document.createElement("div");
+        toast.className = "toast toast--" + tone;
+        toast.setAttribute("role", tone === "error" || tone === "warning" ? "alert" : "status");
+        const actionHtml = actions.map(function (a, i) {
+          const cls = a.primary ? "toast-action toast-action--primary" : "toast-action";
+          if (a.href) {
+            return '<a class="' + cls + '" href="' + String(a.href).replace(/"/g,"&quot;") + '" data-act="' + i + '">' + String(a.label || "Go") + "</a>";
+          }
+          return '<button type="button" class="' + cls + '" data-act="' + i + '">' + String(a.label || "OK") + '</button>';
+        }).join("");
+        toast.innerHTML =
+          '<div class="toast-icon" aria-hidden="true">' + icon + '</div>' +
+          '<div class="toast-body">' +
+            '<strong class="toast-title"></strong>' +
+            '<p class="toast-message"></p>' +
+            (actionHtml ? '<div class="toast-actions">' + actionHtml + '</div>' : '') +
+          '</div>' +
+          '<button type="button" class="toast-close" aria-label="Dismiss notification">×</button>';
+        toast.querySelector(".toast-title").textContent = title;
+        toast.querySelector(".toast-message").textContent = message;
+        toast.querySelectorAll("[data-act]").forEach(function (btn) {
+          const a = actions[Number(btn.getAttribute("data-act"))];
+          if (!a) return;
+          btn.addEventListener("click", function (e) {
+            if (typeof a.onClick === "function") { try { a.onClick(e, { dismiss: dismissToast }); } catch (_) {} }
+            if (a.autoDismiss !== false) dismissToast();
+          });
+        });
+        const close = toast.querySelector(".toast-close");
+        if (close) close.addEventListener("click", dismissToast);
+        root.appendChild(toast);
+        requestAnimationFrame(function () { toast.classList.add("toast--in"); });
+        if (auto > 0) toastTimer = setTimeout(dismissToast, auto);
+      }
+      function statusNeedsApp(status) {
+        const s = String(status || "Not Submitted").trim().toLowerCase();
+        return s !== "approved" && s !== "pending";
+      }
+      function setField(sel, text) {
+        const els = document.querySelectorAll(sel);
+        els.forEach(function (el) { el.textContent = text == null ? "" : String(text); });
+      }
+      function renderApplicationBanner(pageTitle, u) {
+        const status = (u && u.application && u.application.status) || "Not Submitted";
+        if (!statusNeedsApp(status)) return false;
+        const message =
+          status === "Rejected"
+            ? "Your PWD application was not approved. Please reapply to unlock " + pageTitle + "."
+            : "Submit your PWD application first to unlock " + pageTitle + ".";
+        const ctaLabel = status === "Rejected" ? "Apply Again" : "Submit Application";
+        const dash = document.querySelector("section.dash");
+        if (dash && !dash.querySelector(".app-required-banner")) {
+          const b = document.createElement("div");
+          b.className = "app-required-banner";
+          b.style.cssText =
+            "background:linear-gradient(135deg,rgba(255,166,0,0.14),rgba(255,193,7,0.08));" +
+            "border:1px solid rgba(255,140,0,0.35);border-radius:22px;padding:18px 20px;margin:0 0 22px 0;" +
+            "display:flex;align-items:flex-start;gap:14px;box-shadow:0 14px 30px rgba(255,166,0,0.1);";
+          b.innerHTML =
+            '<div style="width:46px;height:46px;min-width:46px;border-radius:14px;' +
+            'display:grid;place-items:center;background:rgba(255,166,0,0.2);color:#b86800;font-size:22px;">⚠</div>' +
+            '<div style="min-width:0;flex:1;">' +
+              '<strong style="display:block;font-size:16px;color:#5a3a00;margin-bottom:6px;">' + ctaLabel + ' to access ' + pageTitle + '</strong>' +
+              '<p style="margin:0 0 14px 0;color:#6b5318;font-size:14px;line-height:1.5;">' + message +
+              ' Once your application is reviewed and approved, your digital ID, benefits, and transactions will become fully available.</p>' +
+              '<div style="display:flex;flex-wrap:wrap;gap:10px;">' +
+                '<a href="application-form.html" class="btn primary">' + ctaLabel + '</a>' +
+                '<a href="dashboard.html" class="btn light">Back to Dashboard</a>' +
+              '</div>' +
+            '</div>';
+          dash.insertBefore(b, dash.firstChild);
+        }
+        return true;
+      }
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        const qrToggle = document.getElementById('qrToggle');
+        const nfcToggle = document.getElementById('nfcToggle');
+        const pwdQrPanel = document.getElementById('pwdQrPanel');
+        const pwdQrCanvas = document.getElementById('pwdQrCanvas');
+        const pwdQrStatus = document.getElementById('pwdQrStatus');
+        const downloadPwdQr = document.getElementById('downloadPwdQr');
+        const removeNfcCard = document.getElementById('removeNfcCard');
+        const qrMethodStatus = document.getElementById('qrMethodStatus');
+        const nfcMethodStatus = document.getElementById('nfcMethodStatus');
+        const nfcCardStatus = document.getElementById('nfcCardStatus');
+        const profilePhoto = document.querySelector('.sidebar .profile .profile-photo');
+
+        const signOut = document.querySelector(".sign-out");
+        if (signOut) signOut.addEventListener("click", async (e) => {
+          e.preventDefault();
+          if (window.SmartPWDAuth) await SmartPWDAuth.logoutUser();
+          window.location.href = "login.html";
+        });
+
+        if (!window.SmartPWDAuth) {
+          setTimeout(function () { window.location.reload(); }, 300);
+          return;
+        }
+        const user = await SmartPWDAuth.requireAuth(["pwd", "admin"]);
+        if (!user) return;
+
+        let idSettings = null;
+        function renderPwdQr(settings) {
+          if (!pwdQrPanel || !pwdQrCanvas) return;
+          const approved = String((user.application && user.application.status) || '').toLowerCase() === 'approved';
+          const idNumber = String(user.idNumber || '').trim();
+          const showCode = settings.qrEnabled && approved && !!idNumber;
+          pwdQrPanel.hidden = !showCode;
+          if (!showCode) {
+            pwdQrCanvas.replaceChildren();
+            if (downloadPwdQr) downloadPwdQr.disabled = true;
+            if (pwdQrStatus) {
+              pwdQrStatus.textContent = !settings.qrEnabled
+                ? 'QR verification is disabled. Turn it on to display your code.'
+                : !approved
+                ? 'Your QR code will be available after your application is approved.'
+                : 'Your PWD ID number has not been assigned yet.';
+            }
+            return;
+          }
+          pwdQrCanvas.replaceChildren();
+          if (typeof window.QRCode !== 'function') {
+            if (pwdQrStatus) pwdQrStatus.textContent = 'QR generator did not load. Refresh the page and try again.';
+            if (downloadPwdQr) downloadPwdQr.disabled = true;
+            return;
+          }
+          // The code must carry the holder's secret as well as the ID number:
+          // an ID number alone is guessable, and the secret is reissued on
+          // every Approve / Reject so an older printed code stops verifying.
+          const qrToken = String(user.qrToken || '').trim();
+          const qrLink = new URL('verify.html', window.location.href);
+          qrLink.searchParams.set('id', idNumber);
+          if (qrToken) qrLink.searchParams.set('t', qrToken);
+
+          new window.QRCode(pwdQrCanvas, {
+            text: qrLink.href,
+            width: 144,
+            height: 144,
+            colorDark: '#152a47',
+            colorLight: '#ffffff',
+            correctLevel: window.QRCode.CorrectLevel.M,
+          });
+          if (pwdQrStatus) pwdQrStatus.textContent = 'Ready to scan. This QR opens your verification page.';
+          if (downloadPwdQr) downloadPwdQr.disabled = false;
+        }
+        function showMethodMessage(node, message, tone) {
+          if (!node) return;
+          node.textContent = message || '';
+          node.classList.toggle('verification-error', tone === 'error');
+          node.classList.toggle('verification-success', tone === 'success');
+          node.classList.toggle('verification-warning', tone === 'warning');
+        }
+        function renderIdSettings(settings) {
+          idSettings = settings;
+          const settingsAvailable = settings.settingsAvailable !== false;
+          if (qrToggle) {
+            qrToggle.disabled = !settingsAvailable;
+            qrToggle.classList.toggle('on', settings.qrEnabled);
+            qrToggle.setAttribute('aria-pressed', String(settings.qrEnabled));
+            qrToggle.setAttribute('aria-label', 'QR Code Verification ' + (settings.qrEnabled ? 'enabled' : 'disabled'));
+          }
+          if (nfcToggle) {
+            nfcToggle.disabled = !settingsAvailable;
+            nfcToggle.classList.toggle('on', settings.nfcEnabled);
+            nfcToggle.setAttribute('aria-pressed', String(settings.nfcEnabled));
+            nfcToggle.setAttribute('aria-label', 'NFC Verification ' + (settings.nfcEnabled ? 'enabled' : 'disabled'));
+          }
+          showMethodMessage(qrMethodStatus, !settingsAvailable
+            ? 'Enabled by default · run database migration 011 to manage this setting.'
+            : settings.qrEnabled
+            ? 'Enabled · establishments can verify this ID by QR.'
+            : 'Disabled · QR scans will be rejected.', !settingsAvailable ? 'warning' : settings.qrEnabled ? 'success' : '');
+          showMethodMessage(nfcMethodStatus, !settingsAvailable
+            ? 'Enabled by default · run database migration 011 to manage this setting.'
+            : settings.nfcEnabled
+            ? 'Enabled · contactless checks are allowed.'
+            : 'Disabled · NFC scans will be rejected.', !settingsAvailable ? 'warning' : settings.nfcEnabled ? 'success' : '');
+          showMethodMessage(nfcCardStatus, settings.nfcLinked
+            ? 'An NFC card is linked to your ID.'
+            : 'No NFC card is currently linked.', '');
+          if (removeNfcCard) removeNfcCard.hidden = !settings.nfcLinked;
+          renderPwdQr(settings);
+        }
+        async function authenticatedRequest(url, options) {
+          const sb = window.supabase;
+          if (!sb || !sb.auth || typeof sb.auth.getSession !== 'function') {
+            throw new Error('Your secure session is unavailable. Please sign in again.');
+          }
+          const { data } = await sb.auth.getSession();
+          const token = data && data.session && data.session.access_token;
+          if (!token) throw new Error('Your session expired. Please sign in again.');
+          const opts = options || {};
+          const headers = Object.assign({}, opts.headers || {}, { Authorization: 'Bearer ' + token });
+          if (opts.body) headers['Content-Type'] = 'application/json';
+          const response = await fetch(url, Object.assign({}, opts, { headers }));
+          const json = await response.json().catch(() => null);
+          if (!response.ok || !json || !json.ok) {
+            throw new Error((json && json.message) || 'The request could not be completed.');
+          }
+          return json;
+        }
+        async function loadIdSettings() {
+          try {
+            renderIdSettings(await authenticatedRequest('/api/pwd/verification-settings'));
+          } catch (err) {
+            showMethodMessage(qrMethodStatus, err.message || 'Could not load verification settings.', 'error');
+            showMethodMessage(nfcMethodStatus, err.message || 'Could not load verification settings.', 'error');
+            if (qrToggle) qrToggle.disabled = true;
+            if (nfcToggle) nfcToggle.disabled = true;
+          }
+        }
+        async function saveMethod(key, button) {
+          if (!idSettings || !button) return;
+          const patch = {};
+          patch[key] = !idSettings[key];
+          button.disabled = true;
+          try {
+            renderIdSettings(await authenticatedRequest('/api/pwd/verification-settings', {
+              method: 'PUT',
+              body: JSON.stringify(patch),
+            }));
+            showToast({ tone: 'success', title: 'Verification setting saved', message: 'Your preference is now applied to future scans.', autoDismissMs: 4000 });
+          } catch (err) {
+            showMethodMessage(key === 'qrEnabled' ? qrMethodStatus : nfcMethodStatus, err.message || 'Could not save this setting.', 'error');
+          } finally {
+            if (idSettings) button.disabled = false;
+          }
+        }
+        if (qrToggle) qrToggle.addEventListener('click', function () { saveMethod('qrEnabled', qrToggle); });
+        if (nfcToggle) nfcToggle.addEventListener('click', function () { saveMethod('nfcEnabled', nfcToggle); });
+        if (downloadPwdQr) downloadPwdQr.addEventListener('click', function () {
+          const image = pwdQrCanvas && pwdQrCanvas.querySelector('img');
+          const canvas = pwdQrCanvas && pwdQrCanvas.querySelector('canvas');
+          const dataUrl = canvas ? canvas.toDataURL('image/png') : image && image.src;
+          if (!dataUrl) return;
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = 'smart-pwd-id-qr.png';
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+        if (removeNfcCard) removeNfcCard.addEventListener('click', async function () {
+          if (!idSettings || !idSettings.nfcLinked) return;
+          const confirmed = window.confirm('Remove the NFC card linked to your PWD ID? The lost card will no longer verify, and an admin will need to link a replacement card.');
+          if (!confirmed) return;
+          removeNfcCard.disabled = true;
+          try {
+            const result = await authenticatedRequest('/api/pwd/nfc-card', { method: 'DELETE' });
+            renderIdSettings(Object.assign({}, idSettings, { nfcLinked: result.nfcLinked }));
+            showToast({ tone: 'success', title: 'NFC card removed', message: 'The lost card can no longer be used for verification.', autoDismissMs: 6000 });
+          } catch (err) {
+            showMethodMessage(nfcCardStatus, err.message || 'Could not remove the NFC card.', 'error');
+          } finally {
+            removeNfcCard.disabled = false;
+          }
+        });
+        await loadIdSettings();
+
+        const fullName = ((user.firstName || "") + " " + (user.lastName || "")).trim();
+        setField(".sidebar .profile b", fullName || "Unnamed user");
+        try {
+          const sb = window.supabase;
+          if (sb && user.uid && profilePhoto) {
+            const photoResult = await sb
+              .from('pwd_applications')
+              .select('photo_url')
+              .eq('user_id', user.uid)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            const appPhoto = photoResult && photoResult.data && photoResult.data.photo_url;
+            if (appPhoto) {
+              profilePhoto.src = appPhoto;
+              profilePhoto.alt = (fullName || 'User') + ' 2x2 photo';
+            }
+          }
+        } catch (_) { /* keep the placeholder photo */ }
+        const currentPage = window.location.pathname.split("/").pop() || "my-pwd-id.html";
+        document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
+          const p = link.getAttribute("href");
+          link.classList.toggle("selected", p === currentPage);
+        });
+        const needs = renderApplicationBanner("My Smart PWD ID", user);
+        if (needs) {
+          setTimeout(function () {
+            showToast({
+              tone: "warning",
+              title: "Submit your PWD application first",
+              message: "Your digital ID card is available after your application is approved. Submit the application form now.",
+              autoDismissMs: 12000,
+              actions: [
+                { label: "Submit Application", primary: true, href: "application-form.html" },
+                { label: "Go to Dashboard", href: "dashboard.html" },
+                { label: "Dismiss", onClick: function (_e, ctx) { ctx.dismiss(); }, autoDismiss: true }
+              ]
+            });
+          }, 450);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PWD ID Application | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Invisible native date input used only to pop the calendar for #birthdate.
+       It must stay rendered (not display:none) for showPicker() to work, so it
+       keeps a 1px layout box directly under the Birthdate field. */
+    .date-native {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      border: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="top">
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span>
+        <strong>Smart PWD ID</strong>
+        <small>Cardholder Portal</small>
+      </span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a class="active" href="dashboard.html" aria-current="page">Dashboard</a>
+      <a href="verify.html">Verify</a>
+      <a href="index.html">Home</a>
+    </nav>
+    <button type="button" class="access settings-trigger" data-access aria-label="Open Settings">
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+  </header>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="profile" >
+        <div class="photo" aria-hidden="true"><img class="profile-photo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=professional%20ID%20photo%20portrait%20of%20a%20smiling%20young%20filipino%20woman%20with%20dark%20hair%20wearing%20black%20blazer%20white%20collar%20shirt%20neutral%20gray%20background%20formal%20government%20ID%20style%20passport%20photo&image_size=square_hd" alt="User profile photo"></div>
+        <b></b>
+        <small>PWD Cardholder</small>
+      </div>
+      <nav class="sidebar-nav" aria-label="Cardholder navigation">
+        <a href="dashboard.html" class="selected" aria-current="page">
+          <span aria-hidden="true">▦</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="my-pwd-id.html">
+          <span aria-hidden="true">▣</span>
+          <span>My Smart PWD ID</span>
+        </a>
+        <a href="benefits.html">
+          <span aria-hidden="true">⌁</span>
+          <span>Benefits</span>
+        </a>
+        <a href="transactions.html">
+          <span aria-hidden="true">◷</span>
+          <span>Transactions</span>
+        </a>
+        <button type="button" class="sidebar-button" data-access aria-label="Open Settings">
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+        <a class="sign-out" href="index.html">
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <section class="dash">
+      <div class="dashhead">
+        <div>
+          <span class="eyebrow">APPLICATION</span>
+          <h1>PWD ID Application</h1>
+          <p>Please fill out the form completely and upload the required documents.</p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <form id="application-form" novalidate>
+          <div class="formgrid">
+            <div class="form-group">
+              <label for="birthdate">Birthdate</label>
+              <input type="text" id="birthdate" placeholder="dd/mm/yyyy">
+              <input type="date" id="birthdate-picker" class="date-native" tabindex="-1" aria-hidden="true">
+            </div>
+            <div class="form-group">
+              <label for="contact-number">Contact Number</label>
+              <input type="tel" id="contact-number" placeholder="09XX XXX XXXX">
+            </div>
+            <div class="form-group">
+              <label for="status">Status <small>Citizenship / residency status</small></label>
+              <select id="status" required>
+                <option value="">— Select status —</option>
+                <option value="Filipino Citizen">Filipino Citizen</option>
+                <option value="Dual Citizen">Dual Citizen</option>
+                <option value="Naturalized Citizen">Naturalized Citizen</option>
+                <option value="Permanent Resident Alien">Permanent Resident Alien</option>
+                <option value="Temporary Resident">Temporary Resident</option>
+                <option value="Refugee / Stateless Person">Refugee / Stateless Person</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="country">Country <small>Country of citizenship or issuance</small></label>
+              <select id="country" required>
+                <option value="">— Select country —</option>
+                <option value="Philippines">Philippines</option>
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Australia">Australia</option>
+                <option value="New Zealand">New Zealand</option>
+                <option value="Japan">Japan</option>
+                <option value="South Korea">South Korea</option>
+                <option value="China">China</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Malaysia">Malaysia</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Vietnam">Vietnam</option>
+                <option value="India">India</option>
+                <option value="Hong Kong">Hong Kong</option>
+                <option value="Taiwan">Taiwan</option>
+                <option value="Germany">Germany</option>
+                <option value="France">France</option>
+                <option value="Spain">Spain</option>
+                <option value="Italy">Italy</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Sweden">Sweden</option>
+                <option value="Norway">Norway</option>
+                <option value="United Arab Emirates">United Arab Emirates</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="Qatar">Qatar</option>
+                <option value="Israel">Israel</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group span2">
+              <label for="address">Complete Address</label>
+              <input type="text" id="address" placeholder="House No., Street, City, Province">
+            </div>
+          </div>
+
+          <h3 class="form-section-heading">In case of emergency, Please notify with</h3>
+
+          <div class="formgrid">
+            <div class="form-group">
+              <label for="emergency-name">Name of guard</label>
+              <input type="text" id="emergency-name" placeholder="Full name of your emergency contact">
+            </div>
+            <div class="form-group">
+              <label for="emergency-contact">Contact number of guard</label>
+              <input type="tel" id="emergency-contact" placeholder="e.g. 0917 123 4567">
+            </div>
+            <div class="form-group">
+              <label for="disability-type">Type of disability</label>
+              <input type="text" id="disability-type" placeholder="e.g. Physical, Visual, Hearing, Intellectual">
+            </div>
+            <div class="form-group">
+              <label for="sex">Sex</label>
+              <select id="sex">
+                <option value="">— Select sex —</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="blood-type">Blood type</label>
+              <select id="blood-type">
+                <option value="">— Select blood type —</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+          </div>
+
+          <h3 class="form-section-heading">Required Documents</h3>
+
+          <div class="upload-grid">
+            <div class="form-group upload-group">
+              <label for="medical-cert">Medical Certificate <small>Upload proof of disability from your physician.</small></label>
+              <label class="upload-label">
+                <span class="file-name">No file chosen</span>
+                <span class="btn light">Upload</span>
+              </label>
+              <input type="file" id="medical-cert" accept="image/*,.pdf">
+            </div>
+
+            <div class="form-group upload-group">
+              <label for="valid-id">Valid ID / Document <small>Birth certificate or current valid ID.</small></label>
+              <label class="upload-label">
+                <span class="file-name">No file chosen</span>
+                <span class="btn light">Upload</span>
+              </label>
+              <input type="file" id="valid-id" accept="image/*,.pdf">
+            </div>
+
+            <div class="form-group upload-group">
+              <label for="old-id">Old ID Upload (Optional) <small>If renewing, upload your previous PWD ID.</small></label>
+              <label class="upload-label">
+                <span class="file-name">No file chosen</span>
+                <span class="btn light">Upload</span>
+              </label>
+              <input type="file" id="old-id" accept="image/*,.pdf">
+            </div>
+
+            <div class="form-group upload-group">
+              <label for="affidavit">Affidavit of Loss (Required for replacement) <small>Notarized document if ID was lost or stolen.</small></label>
+              <label class="upload-label">
+                <span class="file-name">No file chosen</span>
+                <span class="btn light">Upload</span>
+              </label>
+              <input type="file" id="affidavit" accept="image/*,.pdf">
+            </div>
+
+            <div class="form-group upload-group">
+              <label for="picture">2x2 Picture Upload <small>Recent 2x2 colored photo with white background.</small></label>
+              <label class="upload-label">
+                <span class="file-name">No file chosen</span>
+                <span class="btn light">Upload</span>
+              </label>
+              <input type="file" id="picture" accept="image/*">
+            </div>
+
+            <div class="form-group upload-group">
+              <label for="signature">Signature Upload <small>Clear photo of your signature on white paper.</small></label>
+              <label class="upload-label">
+                <span class="file-name">No file chosen</span>
+                <span class="btn light">Upload</span>
+              </label>
+              <input type="file" id="signature" accept="image/*">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn light" onclick="window.location.href='dashboard.html'">Cancel</button>
+            <button type="submit" class="btn primary">Submit Application</button>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <!-- Global JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+      var SUPABASE_ANON_KEY =
+        'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+      }
+    })();
+  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // --------------- AUTH GUARD (ASYNC) ---------------
+      SmartPWDAuth.requireAuth(["pwd", "admin"]).then(function (user) {
+        if (!user) return;
+        initPage(user);
+      }).catch(function (err) {
+        console.error('[application-form] auth guard failed:', err);
+        window.location.replace('login.html');
+      });
+
+      function initPage(user) {
+        // --------------- PRE-POPULATE FORM ---------------
+        var contactInput = document.getElementById('contact-number');
+        if (contactInput && user.mobile) contactInput.value = user.mobile;
+
+        // --------------- BIRTHDATE PICKER ---------------
+        // Clicking anywhere on the Birthdate field pops the native calendar
+        // straight away (no need to hit the small calendar icon). The chosen
+        // date is mirrored back as dd/mm/yyyy so the rest of the form and the
+        // saved payload keep their existing format.
+        var birthText = document.getElementById('birthdate');
+        var birthPicker = document.getElementById('birthdate-picker');
+        if (birthText && birthPicker) {
+          birthText.addEventListener('click', function () {
+            if (typeof birthPicker.showPicker !== 'function') return;
+            var typed = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(birthText.value.trim());
+            if (typed) birthPicker.value = typed[3] + '-' + typed[2] + '-' + typed[1];
+            try {
+              birthPicker.showPicker();
+            } catch (_) { /* browser blocked the picker — typing still works */ }
+          });
+          birthPicker.addEventListener('change', function () {
+            if (!birthPicker.value) return;
+            var p = birthPicker.value.split('-');
+            if (p.length === 3) birthText.value = p[2] + '/' + p[1] + '/' + p[0];
+          });
+        }
+
+        var profileName = document.querySelector('.sidebar .profile b');
+        if (profileName) profileName.textContent = (user.firstName || '') + ' ' + (user.lastName || '');
+
+        var pageHeading = document.querySelector('.dashhead h1');
+        if (pageHeading) pageHeading.textContent = 'Submit application, ' + (user.firstName || 'there');
+
+        // If already Approved, send back to dashboard
+        if (user.application && user.application.status === 'Approved') {
+          window.location.replace('dashboard.html');
+          return;
+        }
+
+        // --------------- FILE UPLOAD LABEL SYNC ---------------
+        document.querySelectorAll('.upload-group input[type="file"]').forEach(function (input) {
+          var uploadLabel = input.previousElementSibling;
+          if (uploadLabel) {
+            uploadLabel.addEventListener('click', function () { input.click(); });
+          }
+          input.addEventListener('change', function () {
+            var fileNameEl = this.previousElementSibling.querySelector('.file-name');
+            if (!fileNameEl) return;
+            fileNameEl.textContent = (this.files.length > 0)
+              ? this.files[0].name
+              : 'No file chosen';
+          });
+        });
+
+        // --------------- SUBMIT APPLICATION (REAL — Supabase) ---------------
+        var form   = document.getElementById('application-form');
+        var submit = form.querySelector('button[type="submit"]');
+        var formMsg = document.getElementById('application-message') || (function () {
+          var el = document.createElement('div');
+          el.id = 'application-message';
+          el.className = 'login-message';
+          form.parentNode.insertBefore(el, form.nextSibling);
+          return el;
+        })();
+
+        function setLoading(on) {
+          submit.disabled = !!on;
+          submit.textContent = on ? 'Submitting…' : 'Submit Application';
+        }
+
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          formMsg.className = 'login-message';
+          formMsg.textContent = '';
+
+          // ---- lightweight validation ----
+          var missing = [];
+          var birthdate  = document.getElementById('birthdate').value.trim();
+          var contact    = document.getElementById('contact-number').value.trim();
+          var address    = document.getElementById('address').value.trim();
+          var status     = document.getElementById('status').value.trim();
+          var country    = document.getElementById('country').value.trim();
+          var emergencyName  = document.getElementById('emergency-name').value.trim();
+          var emergencyContact = document.getElementById('emergency-contact').value.trim();
+          var disabilityType = document.getElementById('disability-type').value.trim();
+          var sex            = document.getElementById('sex').value.trim();
+          var bloodType      = document.getElementById('blood-type').value.trim();
+          if (!birthdate)  missing.push('birthdate');
+          if (!contact)    missing.push('contact number');
+          if (!address)    missing.push('address');
+          if (!status)     missing.push('status');
+          if (!country)    missing.push('country');
+          if (missing.length) {
+            formMsg.className = 'login-message error';
+            formMsg.textContent = 'Please complete: ' + missing.join(', ') + '.';
+            return;
+          }
+
+          setLoading(true);
+
+          try {
+            // Get the current user via the SmartPWDAuth client helper
+            // (we already know a session exists because requireAuth passed).
+            var current = null;
+            try {
+              if (SmartPWDAuth && SmartPWDAuth.currentUser) {
+                current = await SmartPWDAuth.currentUser();
+              }
+            } catch (_) { current = null; }
+
+            // Fallback: derive uid from Supabase session directly
+            var uid = null;
+            if (current && current.uid) {
+              uid = current.uid;
+            } else {
+              var sb = window.supabase;
+              if (sb && sb.auth) {
+                var sess = await sb.auth.getSession();
+                if (sess && sess.data && sess.data.session && sess.data.session.user) {
+                  uid = sess.data.session.user.id;
+                }
+              }
+            }
+            if (!uid) throw new Error('No active session. Please sign in again.');
+
+            function readFileAsDataUrl(file) {
+              return new Promise(function (resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function () { resolve(reader.result); };
+                reader.onerror = function () { reject(reader.error); };
+                reader.readAsDataURL(file);
+              });
+            }
+
+            // Phone photos are typically several MB each, and base64 inflates
+            // them by ~33%. Downscale them in the browser so the request stays
+            // well under the server limit and the stored data URLs stay small.
+            var MAX_EDGE = 1400;
+            function shrinkImage(file) {
+              if (!file || !/^image\//.test(file.type)) return Promise.resolve(null);
+              // Keep transparent formats (e.g. signature) untouched.
+              if (file.type === 'image/png' && file.size < 400 * 1024) return Promise.resolve(null);
+              return new Promise(function (resolve) {
+                var url = URL.createObjectURL(file);
+                var img = new Image();
+                img.onload = function () {
+                  try {
+                    var scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+                    if (scale === 1 && file.size < 800 * 1024) {
+                      URL.revokeObjectURL(url);
+                      return resolve(null);
+                    }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    var out = canvas.toDataURL('image/jpeg', 0.8);
+                    URL.revokeObjectURL(url);
+                    resolve(out);
+                  } catch (_) {
+                    URL.revokeObjectURL(url);
+                    resolve(null);
+                  }
+                };
+                img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+                img.src = url;
+              });
+            }
+
+            var files = {};
+            var fileNames = {};
+            var fileIds = ['medical-cert','valid-id','old-id','affidavit','picture','signature'];
+            for (var i = 0; i < fileIds.length; i++) {
+              var inp = document.getElementById(fileIds[i]);
+              if (inp && inp.files && inp.files.length) {
+                var chosen = inp.files[0];
+                fileNames[fileIds[i]] = chosen.name;
+                try {
+                  var shrunk = await shrinkImage(chosen);
+                  files[fileIds[i]] = shrunk || await readFileAsDataUrl(chosen);
+                } catch (e) {
+                  files[fileIds[i]] = '';
+                }
+              }
+            }
+
+            // ---- Submit via LOCAL SERVER proxy ----
+            // The server talks to Supabase using its service-role client,
+            // so the browser doesn't need direct Supabase REST connectivity.
+            var proxyResp = await fetch('/api/submit-application', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                userId: uid,
+                birthdate: birthdate,
+                contact: contact,
+                address: address,
+                status: status,
+                country: country,
+                emergencyName: emergencyName,
+                emergencyContact: emergencyContact,
+                disabilityType: disabilityType,
+                sex: sex,
+                bloodType: bloodType,
+                files: files,
+                fileNames: fileNames
+              })
+            });
+
+            var proxyJson = null;
+            try { proxyJson = await proxyResp.json(); } catch (_) {}
+            if (!proxyResp.ok || !proxyJson || !proxyJson.ok) {
+              var msg = proxyJson && proxyJson.message
+                ? proxyJson.message
+                : ('HTTP ' + proxyResp.status + ' submitting application.');
+              throw new Error(msg);
+            }
+
+            // Invalidate client cache so dashboard reflects Pending status
+            try { SmartPWDAuth && SmartPWDAuth.updateCurrentUser && await SmartPWDAuth.updateCurrentUser({ mobile: contact }); } catch (_) {}
+
+            setLoading(false);
+            formMsg.className = 'login-message success';
+            formMsg.textContent = 'Application submitted for review. Redirecting…';
+
+            setTimeout(function () {
+              window.location.href = 'dashboard.html';
+            }, 900);
+
+          } catch (err) {
+            setLoading(false);
+            console.error('[application-form] submit error:', err);
+            formMsg.className = 'login-message error';
+            formMsg.textContent = err && err.message ? err.message : 'Could not save application. Please sign in again.';
+          }
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>

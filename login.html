@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Secure Smart PWD ID web portal login.">
+  <title>Login | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth">
+
+  <!-- LOGIN CARD -->
+  <main class="auth-container">
+
+    <section class="authbox reveal" aria-labelledby="login-title">
+
+      <!-- Brand -->
+      <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+        <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+        <span>
+          <strong>Smart PWD ID</strong>
+          <small>Secure web portal</small>
+        </span>
+      </a>
+
+      <!-- Heading -->
+      <div class="auth-heading">
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1 id="login-title">Sign in</h1>
+        <p>Sign in to access your Smart PWD ID portal.</p>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="login" novalidate>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            inputmode="email"
+            placeholder="you@example.com"
+            required
+            aria-describedby="email-error"
+          >
+          <small id="email-error" class="form-error" role="alert"></small>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="pass">Password</label>
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <div class="password-field">
+            <input
+              id="pass"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              required
+              minlength="6"
+              aria-describedby="password-error"
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              id="togglePassword"
+              aria-label="Show password"
+              aria-pressed="false"
+            >Show</button>
+          </div>
+
+          <small id="password-error" class="form-error" role="alert"></small>
+        </div>
+
+        <!-- Remember -->
+        <label class="remember">
+          <input type="checkbox" id="remember" name="remember">
+          <span>Remember me</span>
+        </label>
+
+        <!-- Login button -->
+        <button
+          type="submit"
+          class="btn primary full"
+          id="loginButton"
+        >
+          <span id="loginButtonText">Sign In →</span>
+          <span id="loginSpinner" class="login-spinner" aria-hidden="true">⟳</span>
+        </button>
+
+        <!-- General error -->
+        <div
+          id="loginMessage"
+          class="login-message"
+          role="alert"
+          aria-live="polite"
+        ></div>
+
+      </form>
+
+      <!-- DEMO ACCOUNTS -->
+      <section class="demo" aria-label="Demo accounts">
+
+        <div class="demo-title">
+          <span aria-hidden="true">ⓘ</span>
+          <b>Demo accounts</b>
+        </div>
+
+        <div class="demo-account">
+          <strong>PWD Cardholder</strong>
+          <code>ken@gmail.com</code>
+          <code>ken123456</code>
+        </div>
+
+        <div class="demo-account">
+          <strong>Verifier</strong>
+          <code>verifier@smartpwd.ph</code>
+          <code>verify123</code>
+        </div>
+
+        <div class="demo-account">
+          <strong>Administrator</strong>
+          <code>admin@smartpwd.ph</code>
+          <code>Admin123</code>
+        </div>
+
+      </section>
+
+      <!-- FEATURES -->
+      <div class="auth-features">
+        <span>✓ Digital ID</span>
+        <span>✓ QR & NFC Verification</span>
+        <span>✓ Accessibility Controls</span>
+      </div>
+
+      <!-- Register -->
+      <p class="center">
+        New user?
+        <a href="register.html">Create account</a>
+      </p>
+
+      <!-- Back Home -->
+      <p class="back-home">
+        <a href="index.html">← Back to Smart PWD ID</a>
+      </p>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+    const SUPABASE_PUBLIC_KEY =
+      'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+    window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    });
+
+    function roleTarget(role) {
+      return ({ pwd: 'dashboard.html', verifier: 'verifier.html', admin: 'admin.html' })[role] || 'index.html';
+    }
+
+    async function resolveRedirect(session) {
+      if (!session || !session.user) return 'index.html';
+      // Retry once: a transient network/RLS hiccup must not send a signed-in
+      // admin to the public landing page (which looks like being logged out).
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .limit(1);
+        if (!error && data && data.length && data[0].role) {
+          return roleTarget(data[0].role);
+        }
+        if (error) await new Promise(r => setTimeout(r, 300));
+      }
+      // Fall back to the auth metadata rather than a public page.
+      const md = (session.user.user_metadata) || {};
+      if (md.role) return roleTarget(md.role);
+      const at = md.account_type || md.accountType || '';
+      if (at === 'admin') return 'admin.html';
+      if (at === 'establishment') return 'verifier.html';
+      if (at === 'pwd') return 'dashboard.html';
+      return 'index.html';
+    }
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = await resolveRedirect(session);
+        return;
+      }
+
+      const form = document.getElementById("login");
+      const email = document.getElementById("email");
+      const password = document.getElementById("pass");
+      const togglePw = document.getElementById("togglePassword");
+      const loginButton = document.getElementById("loginButton");
+      const loginBtnText = document.getElementById("loginButtonText");
+      const loginSpinner = document.getElementById("loginSpinner");
+      const loginMessage = document.getElementById("loginMessage");
+
+      if (togglePw) {
+        togglePw.addEventListener("click", function () {
+          const pressed = togglePw.getAttribute("aria-pressed") === "true";
+          togglePw.setAttribute("aria-pressed", String(!pressed));
+          togglePw.textContent = pressed ? "Show" : "Hide";
+          password.type = pressed ? "password" : "text";
+        });
+      }
+
+      function clearErrors() {
+        document.querySelectorAll(".form-error").forEach(function (el) {
+          el.textContent = "";
+        });
+        loginMessage.textContent = "";
+        loginMessage.className = "login-message";
+      }
+
+      function showError(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+
+      function setLoading(on) {
+        loginButton.disabled = !!on;
+        loginSpinner.classList.toggle("show", !!on);
+        loginBtnText.textContent = on ? "Signing in…" : "Sign In →";
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        clearErrors();
+
+        const emailVal = email.value.trim().toLowerCase();
+        const pwVal = password.value;
+        let valid = true;
+
+        if (!emailVal) { showError("email-error", "Please enter your email address."); valid = false; }
+        else if (emailVal.indexOf("@") === -1) { showError("email-error", "Please enter a valid email address."); valid = false; }
+        if (!pwVal) { showError("password-error", "Please enter your password."); valid = false; }
+        if (!valid) return;
+
+        setLoading(true);
+
+        const { data: signData, error } = await supabase.auth.signInWithPassword({
+          email: emailVal,
+          password: pwVal,
+        });
+
+        setLoading(false);
+
+        if (error) {
+          loginMessage.textContent = error.message;
+          loginMessage.className = "login-message error";
+          password.value = "";
+          password.focus();
+          return;
+        }
+
+        const target = await resolveRedirect(signData.session);
+
+        loginBtnText.textContent = "Success ✓";
+        loginMessage.textContent = "Login successful. Redirecting…";
+        loginMessage.className = "login-message success";
+
+        setTimeout(() => {
+          window.location.href = target;
+        }, 450);
+      });
+
+      email.addEventListener("input", function () { showError("email-error", ""); });
+      password.addEventListener("input", function () { showError("password-error", ""); });
+    });
+  </script>
+
+  <!-- Global JavaScript (accessibility settings, page transitions, etc.) -->
+  <script src="js/app.js"></script>
+
+
+</body>
+</html>

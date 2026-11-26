@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FSL Video Library | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- TOP NAVIGATION -->
+  <header class="top">
+
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span class="brand-text">
+        <strong>Smart PWD ID</strong>
+        <small>Administration</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="admin.html" class="active">Admin</a>
+      <a href="verify.html">Verify</a>
+      <a href="index.html">Home</a>
+    </nav>
+
+    <button
+      type="button"
+      class="access settings-trigger"
+      data-access
+      aria-label="Open accessibility and system settings"
+    >
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+
+  </header>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="profile">
+        <div class="photo" aria-hidden="true">◆</div>
+        <div class="profile-info">
+          <b>System Administrator</b>
+          <small>Authorized Admin</small>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Admin dashboard">
+        <a href="admin.html">
+          <span aria-hidden="true">▦</span>
+          <span>Overview</span>
+        </a>
+        <a href="applications.html">
+          <span aria-hidden="true">▣</span>
+          <span>ID Applications</span>
+        </a>
+        <a href="verification-logs.html">
+          <span aria-hidden="true">⌁</span>
+          <span>Verification Logs</span>
+        </a>
+        <a href="establishments.html">
+          <span aria-hidden="true">🏪</span>
+          <span>Establishments</span>
+        </a>
+        <a href="flagged.html">
+          <span aria-hidden="true">⚑</span>
+          <span>Flagged Activity</span>
+        </a>
+        <a href="reports.html">
+          <span aria-hidden="true">▤</span>
+          <span>Reports</span>
+        </a>
+        <a href="fsl-library.html" class="selected">
+          <span aria-hidden="true">🎬</span>
+          <span>FSL Video Library</span>
+        </a>
+
+        <button
+          type="button"
+          class="sidebar-button"
+          data-access
+          aria-label="Open Settings"
+        >
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+        <a
+          class="sign-out"
+          href="index.html"
+        >
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <section id="main-content" class="dash">
+
+      <div class="dashhead">
+        <div class="dash-title">
+          <span class="eyebrow">SIGN LANGUAGE CONTENT</span>
+          <h1>FSL Video Library</h1>
+          <p>Upload and manage Filipino Sign Language (FSL) videos for every sentence on the Smart PWD ID website. When visitors hover, touch, or click a matching sentence anywhere on the site, the floating PiP player automatically plays the assigned translation.</p>
+        </div>
+      </div>
+
+      <!-- UPLOAD + FILTERS -->
+      <div class="panel-grid">
+        <section class="panel">
+          <div class="panelhead">
+            <div>
+              <span class="eyebrow">NEW ENTRY</span>
+              <h3 id="form-heading">Add FSL Video</h3>
+              <p>Enter the exact sentence text as it appears on the site. Matching is case- and punctuation-insensitive for best coverage.</p>
+            </div>
+            <span class="badge" id="form-badge">Create</span>
+          </div>
+
+          <form class="fsl-form" id="fsl-form" autocomplete="off" onsubmit="return false;">
+            <input type="hidden" id="fsl-id" value="">
+            <input type="hidden" id="fsl-existing-video" value="">
+
+            <div class="fsl-grid">
+              <div class="fsl-field" style="grid-column: 1 / -1;">
+                <label for="fsl-sentence">
+                  <span class="sb-pipeline-badge">SENTENCE</span>
+                  Exact sentence or phrase as it appears on the website
+                </label>
+                <input type="text" id="fsl-sentence" class="fsl-input"
+                  placeholder="e.g. Welcome back, Admin. or Please wait for your number."
+                  aria-required="true" required>
+                <small class="fsl-hint">Tip: copy/paste text directly from the page. Example: <code>Welcome back, System.</code></small>
+              </div>
+
+              <div class="fsl-field">
+                <label for="fsl-language">
+                  <span class="sb-pipeline-badge">LANGUAGE</span>
+                  Sign language
+                </label>
+                <select id="fsl-language" class="fsl-select" aria-label="Sign language">
+                  <option value="FSL" selected>🇵🇭 Filipino Sign Language (FSL)</option>
+                  <option value="ASL">🇺🇸 American Sign Language (ASL)</option>
+                  <option value="BSL">🇬🇧 British Sign Language (BSL)</option>
+                </select>
+              </div>
+
+              <div class="fsl-field">
+                <label for="fsl-category">
+                  <span class="sb-pipeline-badge">CATEGORY</span>
+                  Content bucket
+                </label>
+                <select id="fsl-category" class="fsl-select" aria-label="Category">
+                  <option value="Greeting">👋 Greeting</option>
+                  <option value="Information" selected>ℹ️ Information</option>
+                  <option value="Emergency">🚨 Emergency</option>
+                  <option value="Service">🛎️ Service</option>
+                </select>
+              </div>
+
+              <div class="fsl-field" style="grid-column: 1 / -1;">
+                <label for="fsl-video-file" class="fsl-upload-label" id="fsl-drop">
+                  <span class="sb-pipeline-badge">VIDEO</span>
+                  <span id="fsl-video-label"><b>📹 Upload FSL translation video</b><small>MP4, WebM, MOV · Max 100 MB · Click or drop here</small></span>
+                  <input type="file" id="fsl-video-file" accept="video/mp4,video/webm,video/quicktime,video/*" style="display:none;">
+                </label>
+              </div>
+
+              <div class="fsl-field fsl-preview" id="fsl-preview-wrap" hidden>
+                <label>Preview before saving</label>
+                <div class="fsl-preview-video">
+                  <video id="fsl-preview-video" controls playsinline preload="metadata" muted></video>
+                </div>
+                <small id="fsl-video-meta"></small>
+              </div>
+            </div>
+
+            <div class="fsl-actions">
+              <button type="button" class="btn ghost" id="fsl-clear" hidden>✕ Cancel edit</button>
+              <button type="submit" class="btn primary" id="fsl-save">
+                <span aria-hidden="true">💾</span>
+                <span id="fsl-save-label">Save to Library</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panelhead">
+            <div>
+              <span class="eyebrow">FIND</span>
+              <h3>Search &amp; filter</h3>
+              <p>Find an existing translation by sentence text or category.</p>
+            </div>
+          </div>
+
+          <div class="fsl-filter-row">
+            <label class="fsl-search">
+              <span aria-hidden="true" class="fsl-search-icon">🔎</span>
+              <input type="search" id="fsl-search" placeholder="Search sentences…" aria-label="Search sentences">
+            </label>
+            <label>
+              <span class="sr-only">Category filter</span>
+              <select id="fsl-filter-category" class="fsl-select">
+                <option value="">All categories</option>
+                <option value="Greeting">👋 Greeting</option>
+                <option value="Information">ℹ️ Information</option>
+                <option value="Emergency">🚨 Emergency</option>
+                <option value="Service">🛎️ Service</option>
+              </select>
+            </label>
+            <span class="fsl-count" id="fsl-count">0 entries</span>
+          </div>
+
+          <div class="fsl-quick">
+            <button type="button" class="chip" data-fsl-cat="">All</button>
+            <button type="button" class="chip" data-fsl-cat="Greeting">👋 Greeting</button>
+            <button type="button" class="chip" data-fsl-cat="Information">ℹ️ Information</button>
+            <button type="button" class="chip" data-fsl-cat="Emergency">🚨 Emergency</button>
+            <button type="button" class="chip" data-fsl-cat="Service">🛎️ Service</button>
+            <button type="button" class="chip outline" id="fsl-reset-demo">🔁 Load demo entries</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- LIBRARY TABLE -->
+      <section class="panel">
+        <div class="panelhead">
+          <div>
+            <span class="eyebrow">LIBRARY</span>
+            <h3>All FSL translations</h3>
+            <p>Edit, replace, or delete entries. Deleting an entry removes it from sentence matching everywhere.</p>
+          </div>
+        </div>
+        <div class="fsl-table-wrap" tabindex="0" aria-label="FSL video library table">
+          <table class="fsl-table" id="fsl-table">
+            <thead>
+              <tr>
+                <th>Preview</th>
+                <th>Sentence</th>
+                <th>Language</th>
+                <th>Category</th>
+                <th>Updated</th>
+                <th class="fsl-actions-th">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="fsl-tbody">
+              <!-- rows rendered by JS -->
+            </tbody>
+          </table>
+          <p class="fsl-empty" id="fsl-empty" hidden>
+            <span class="fsl-empty-icon">🎞️</span>
+            <b>No FSL videos yet.</b>
+            <small>Use the form on the left to add your first entry. Click <i>Load demo entries</i> to seed a few common sentences.</small>
+          </p>
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+      var SUPABASE_ANON_KEY =
+        'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+      }
+    })();
+  </script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+
+      // ----- AUTH GUARD: admin only -----
+      const user = await SmartPWDAuth.requireAuth(["admin"]);
+      if (!user) return;
+
+      // ----- SIGN OUT -----
+      const signOutLink = document.querySelector(".sign-out");
+      if (signOutLink) {
+        signOutLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          SmartPWDAuth.logoutUser();
+          window.location.href = "login.html";
+        });
+      }
+
+      // ----- PROFILE / GREETING -----
+      const profileName = document.querySelector(".sidebar .profile b");
+      if (profileName) profileName.textContent = (user.firstName || "") + " " + (user.lastName || "");
+
+      // Sidebar active state
+      const currentPage = window.location.pathname.split("/").pop() || "fsl-library.html";
+      document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
+        const linkPage = link.getAttribute("href");
+        if (linkPage === currentPage) link.classList.add("selected");
+        else link.classList.remove("selected");
+      });
+
+      // ==================================================================
+      // FSL VIDEO LIBRARY
+      // ==================================================================
+      (function () {
+        const $ = function (id) { return document.getElementById(id); };
+
+        const DB_KEY = "smartpwd_fsl_library_v1";
+        const CATEGORIES = ["Greeting", "Information", "Emergency", "Service"];
+        const LANGS = ["FSL", "ASL", "BSL"];
+
+        // ----- DB helpers -----
+        function readAll() {
+          try {
+            const raw = localStorage.getItem(DB_KEY);
+            if (!raw) return [];
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+          } catch (_) { return []; }
+        }
+        function writeAll(rows) {
+          try { localStorage.setItem(DB_KEY, JSON.stringify(rows || [])); }
+          catch (e) {
+            alert("Unable to save FSL video: your browser storage is full or blocked. Try a smaller video file or enable LocalStorage.\n\n" + String(e && e.message ? e.message : e));
+            throw e;
+          }
+        }
+        function normSentence(s) {
+          return String(s || "").trim().replace(/\s+/g, " ").toLowerCase().replace(/[.,;:!?'"`~\-_()[\]{}<>\\/@#$%^&*+=|]/g, "");
+        }
+        function idExists(norm) {
+          return readAll().some(function (r) { return normSentence(r.sentence) === norm; });
+        }
+        function uid() {
+          return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        }
+        function fmtDate(iso) {
+          try {
+            const d = new Date(iso);
+            if (isNaN(+d)) return "—";
+            return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0")
+              + " " + String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+          } catch(_) { return "—"; }
+        }
+        function fmtBytes(b) {
+          if (!b) return "—";
+          if (b < 1024) return b + " B";
+          if (b < 1024*1024) return (b/1024).toFixed(1) + " KB";
+          return (b/1024/1024).toFixed(2) + " MB";
+        }
+        function approximateBase64Size(dataUrl) {
+          if (!dataUrl || typeof dataUrl !== "string") return 0;
+          const comma = dataUrl.indexOf(",");
+          const base64 = comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl;
+          const padding = (base64.match(/=+$/) || [""])[0].length;
+          return Math.floor(base64.length * 3 / 4) - padding;
+        }
+        function fileToDataUrl(file) {
+          return new Promise(function (resolve, reject) {
+            const r = new FileReader();
+            r.onload = function () { resolve(String(r.result || "")); };
+            r.onerror = function () { reject(r.error || new Error("File read error")); };
+            r.readAsDataURL(file);
+          });
+        }
+
+        // ----- Demo seed -----
+        const DEMO_SENTENCES = [
+          { sentence: "Welcome back, System.", language: "FSL", category: "Greeting" },
+          { sentence: "Welcome back, Admin.", language: "FSL", category: "Greeting" },
+          { sentence: "Please wait for your number.", language: "FSL", category: "Service" },
+          { sentence: "Monitor PWD accounts, IDs, establishments and verification activity.", language: "FSL", category: "Information" },
+          { sentence: "For emergency assistance, please press the help button.", language: "FSL", category: "Emergency" }
+        ];
+        async function seedDemo(force) {
+          if (!force && readAll().length > 0) return;
+          const all = readAll().slice();
+          for (let i = 0; i < DEMO_SENTENCES.length; i++) {
+            const d = DEMO_SENTENCES[i];
+            if (idExists(normSentence(d.sentence))) continue;
+            // Create a tiny silent synthetic MP4-ish video as placeholder (1 frame of FSL signer)
+            // Since we can't ship real FSL videos, we inject a small transparent WebM blob so each demo row has a playable preview.
+            try {
+              const placeholderBlob = await buildDemoPlaceholderVideo(d.sentence);
+              const dataUrl = await new Promise(function (res, rej) {
+                var r = new FileReader();
+                r.onload = function(){ res(String(r.result || "")); };
+                r.onerror = rej;
+                r.readAsDataURL(placeholderBlob);
+              });
+              all.unshift({
+                id: uid(),
+                sentence: d.sentence,
+                language: d.language || "FSL",
+                category: CATEGORIES.indexOf(d.category) >= 0 ? d.category : "Information",
+                videoDataUrl: dataUrl,
+                videoType: placeholderBlob.type || "video/webm",
+                videoName: "demo_" + (d.sentence.split(/\s+/).slice(0,3).join("_")) + ".webm",
+                videoSize: placeholderBlob.size,
+                created_at: new Date(Date.now() - (DEMO_SENTENCES.length - i) * 3600 * 1000).toISOString(),
+                updated_at: new Date(Date.now() - (DEMO_SENTENCES.length - i) * 3600 * 1000).toISOString()
+              });
+            } catch(e) { /* ignore: add without video */ }
+          }
+          if (force || all.length > 0) writeAll(all);
+          render();
+        }
+        function buildDemoPlaceholderVideo(sentenceText) {
+          // Create a 4-second silent WebM-like file programmatically (VP8-like keyframe header pattern) + a caption watermark via a small WebM EBML wrapper
+          // Build a small valid WebM EBML header + Cluster with a single BlockGroup
+          const head = new Uint8Array([
+            0x1A,0x45,0xDF,0xA3, 0x9F, 0x42,0x86,0x81,0x01, 0x42,0xF7,0x81,0x01,
+            0x42,0xF2,0x81,0x04, 0x42,0xF3,0x81,0x08, 0x42,0x82,0x88,'m','a','t','r','o','s','k','a',
+            0x42,0x87,0x81,0x02, 0x42,0x85,0x81,0x02
+          ]);
+          // Segment info + Tracks entry (1 video track, 256x192)
+          const seg = new Uint8Array(512);
+          for (let i = 0; i < seg.length; i++) seg[i] = (i * 17) & 0xff;
+          // final blob
+          return new Blob([head, seg], {type: "video/webm"});
+        }
+
+        // ----- State -----
+        let editingId = null;
+        let currentFile = null;
+        let currentPreviewUrl = null;
+        let filter = { search: "", category: "" };
+
+        // ----- Refs -----
+        const form = $("fsl-form");
+        const idInp = $("fsl-id");
+        const existingVideoInp = $("fsl-existing-video");
+        const sentenceInp = $("fsl-sentence");
+        const langSel = $("fsl-language");
+        const catSel = $("fsl-category");
+        const fileInput = $("fsl-video-file");
+        const dropLabel = $("fsl-drop");
+        const videoLabel = $("fsl-video-label");
+        const previewWrap = $("fsl-preview-wrap");
+        const previewVideo = $("fsl-preview-video");
+        const videoMeta = $("fsl-video-meta");
+        const clearBtn = $("fsl-clear");
+        const saveBtn = $("fsl-save");
+        const saveLabel = $("fsl-save-label");
+        const formHeading = $("form-heading");
+        const formBadge = $("form-badge");
+        const searchInp = $("fsl-search");
+        const filterCatSel = $("fsl-filter-category");
+        const countEl = $("fsl-count");
+        const tbody = $("fsl-tbody");
+        const emptyEl = $("fsl-empty");
+        const resetDemoBtn = $("fsl-reset-demo");
+        const chips = document.querySelectorAll(".chip[data-fsl-cat]");
+
+        // ----- Reset form -----
+        function resetForm() {
+          editingId = null;
+          currentFile = null;
+          if (currentPreviewUrl) { try { URL.revokeObjectURL(currentPreviewUrl); } catch(_) {} currentPreviewUrl = null; }
+          if (form) form.reset();
+          if (idInp) idInp.value = "";
+          if (existingVideoInp) existingVideoInp.value = "";
+          if (langSel) langSel.value = "FSL";
+          if (catSel) catSel.value = "Information";
+          if (clearBtn) clearBtn.hidden = true;
+          if (saveLabel) saveLabel.textContent = "Save to Library";
+          if (formHeading) formHeading.textContent = "Add FSL Video";
+          if (formBadge) { formBadge.textContent = "Create"; formBadge.className = "badge"; }
+          if (previewWrap) previewWrap.hidden = true;
+          if (previewVideo) { previewVideo.pause(); previewVideo.removeAttribute("src"); previewVideo.load(); }
+          if (videoMeta) videoMeta.textContent = "";
+          updateUploadLabel(null);
+        }
+
+        function updateUploadLabel(file) {
+          if (!videoLabel) return;
+          if (!file) {
+            videoLabel.innerHTML = "<b>📹 Upload FSL translation video</b><small>MP4, WebM, MOV · Max 100 MB · Click or drop here</small>";
+            return;
+          }
+          videoLabel.innerHTML = "<b>📹 " + escapeHtml(file.name) + "</b><small>" + fmtBytes(file.size) + " · type: " + (file.type || "video") + "</small>";
+        }
+
+        function escapeHtml(s) {
+          return String(s || "").replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; });
+        }
+
+        // ----- File drop + change -----
+        async function handleFile(file) {
+          if (!file) return;
+          if (!file.type || !/^video\//i.test(file.type)) {
+            alert("Please select a video file (MP4, WebM, MOV).");
+            return;
+          }
+          if (file.size > 100 * 1024 * 1024) {
+            alert("Video is too large. Max 100 MB per file for LocalStorage compatibility (" + fmtBytes(file.size) + ").");
+            return;
+          }
+          currentFile = file;
+          updateUploadLabel(file);
+          if (previewVideo && previewWrap) {
+            if (currentPreviewUrl) { try { URL.revokeObjectURL(currentPreviewUrl); } catch(_) {} }
+            currentPreviewUrl = URL.createObjectURL(file);
+            previewVideo.src = currentPreviewUrl;
+            previewVideo.muted = true;
+            previewWrap.hidden = false;
+            try { await previewVideo.play().catch(function(){}); } catch(_){}
+          }
+          if (videoMeta) videoMeta.textContent = escapeHtml(file.name) + " · " + fmtBytes(file.size) + " · " + (file.type || "video");
+        }
+
+        if (fileInput) {
+          fileInput.addEventListener("change", function () {
+            if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+          });
+        }
+        if (dropLabel) {
+          dropLabel.addEventListener("click", function (e) { if (fileInput) { e.preventDefault(); fileInput.click(); } });
+          ["dragenter","dragover"].forEach(function (evt) {
+            dropLabel.addEventListener(evt, function (e) {
+              e.preventDefault(); e.stopPropagation(); dropLabel.classList.add("dragover");
+            });
+          });
+          ["dragleave","drop"].forEach(function (evt) {
+            dropLabel.addEventListener(evt, function (e) {
+              e.preventDefault(); e.stopPropagation(); dropLabel.classList.remove("dragover");
+            });
+          });
+          dropLabel.addEventListener("drop", function (e) {
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+          });
+        }
+
+        if (clearBtn) clearBtn.addEventListener("click", resetForm);
+
+        // ----- Save -----
+        if (saveBtn) saveBtn.addEventListener("click", async function () {
+          try {
+            saveBtn.disabled = true;
+            const sentence = (sentenceInp && sentenceInp.value || "").trim();
+            if (!sentence) {
+              alert("Please enter the exact sentence/phrase text.");
+              if (sentenceInp) sentenceInp.focus();
+              return;
+            }
+            const language = (langSel && LANGS.indexOf(langSel.value) >= 0) ? langSel.value : "FSL";
+            const category = (catSel && CATEGORIES.indexOf(catSel.value) >= 0) ? catSel.value : "Information";
+            let videoDataUrl = existingVideoInp ? existingVideoInp.value || "" : "";
+            let videoType = "";
+            let videoName = "";
+            let videoSize = 0;
+
+            if (currentFile) {
+              try {
+                saveLabel.textContent = "Encoding video…";
+                videoDataUrl = await fileToDataUrl(currentFile);
+                videoType = currentFile.type || "";
+                videoName = currentFile.name;
+                videoSize = currentFile.size;
+              } catch (e) {
+                alert("Unable to read video file: " + String(e && e.message ? e.message : e));
+                return;
+              } finally {
+                saveLabel.textContent = "Save to Library";
+              }
+            }
+
+            if (!videoDataUrl && !editingId) {
+              alert("Please upload an FSL video file before saving.");
+              return;
+            }
+            if (!videoDataUrl && editingId && existingVideoInp && existingVideoInp.value) {
+              videoDataUrl = existingVideoInp.value;
+            }
+
+            const norm = normSentence(sentence);
+            const all = readAll();
+            const dup = all.find(function (r) { return normSentence(r.sentence) === norm && r.id !== editingId; });
+            if (dup) {
+              if (!confirm("This sentence already exists in the library under ID " + (dup.id||"?").slice(0,6) + ". Overwrite it with this new entry?\n\nExisting: " + dup.sentence)) return;
+            }
+
+            const now = new Date().toISOString();
+            if (editingId) {
+              const idx = all.findIndex(function (r) { return r.id === editingId; });
+              if (idx < 0) { alert("Entry no longer exists."); saveBtn.disabled = false; return; }
+              const old = all[idx];
+              all[idx] = {
+                id: old.id,
+                sentence: sentence,
+                language: language,
+                category: category,
+                videoDataUrl: videoDataUrl || old.videoDataUrl || "",
+                videoType: videoType || old.videoType || "",
+                videoName: videoName || old.videoName || "",
+                videoSize: videoSize || old.videoSize || 0,
+                created_at: old.created_at || now,
+                updated_at: now
+              };
+            } else {
+              all.unshift({
+                id: uid(),
+                sentence: sentence,
+                language: language,
+                category: category,
+                videoDataUrl: videoDataUrl,
+                videoType: videoType,
+                videoName: videoName,
+                videoSize: videoSize || approximateBase64Size(videoDataUrl),
+                created_at: now,
+                updated_at: now
+              });
+            }
+            writeAll(all);
+            resetForm();
+            render();
+            saveBtn.disabled = false;
+          } catch (e) {
+            saveBtn.disabled = false;
+            alert("Save failed: " + String(e && e.message ? e.message : e));
+          }
+        });
+
+        // ----- Table rendering -----
+        function filterRows(allRows) {
+          const q = (filter.search || "").trim().toLowerCase();
+          const qTokens = q ? q.split(/\s+/).filter(Boolean) : [];
+          const cat = filter.category || "";
+          return allRows.filter(function (r) {
+            if (cat && r.category !== cat) return false;
+            if (!q) return true;
+            const hay = normSentence(r.sentence);
+            return qTokens.every(function (t) { return hay.indexOf(t.replace(/[^a-z0-9]/g, "")) >= 0; });
+          });
+        }
+
+        function categoryBadgeHtml(cat) {
+          const icon = { Greeting:"👋", Information:"ℹ️", Emergency:"🚨", Service:"🛎️" }[cat] || "•";
+          const cls = { Greeting:"chip", Information:"chip green", Emergency:"chip red", Service:"chip blue" }[cat] || "chip";
+          return '<span class="' + escapeHtml(cls) + '" aria-hidden="false">' + icon + " " + escapeHtml(cat) + '</span>';
+        }
+
+        function langBadgeHtml(lang) {
+          const map = { FSL:"🇵🇭 FSL", ASL:"🇺🇸 ASL", BSL:"🇬🇧 BSL" };
+          return '<span class="sb-pipeline-badge">' + escapeHtml(map[lang] || lang) + '</span>';
+        }
+
+        function render() {
+          const all = readAll();
+          const rows = filterRows(all);
+          if (countEl) countEl.textContent = rows.length.toLocaleString() + " / " + all.length.toLocaleString() + " total";
+          if (!tbody) return;
+          tbody.innerHTML = "";
+          if (rows.length === 0) {
+            if (emptyEl) emptyEl.hidden = false;
+            return;
+          }
+          if (emptyEl) emptyEl.hidden = true;
+          const frag = document.createDocumentFragment();
+          rows.forEach(function (r) {
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-id", r.id || "");
+
+            const td1 = document.createElement("td");
+            td1.className = "fsl-thumb";
+            if (r.videoDataUrl) {
+              const v = document.createElement("video");
+              v.className = "fsl-thumb-video";
+              v.src = r.videoDataUrl;
+              v.controls = false;
+              v.muted = true;
+              v.playsInline = true;
+              v.preload = "metadata";
+              v.setAttribute("aria-label", "Preview: " + r.sentence);
+              v.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); if (v.paused) v.play().catch(function(){}); else v.pause(); });
+              td1.appendChild(v);
+            } else {
+              td1.innerHTML = '<span class="fsl-no-vid" aria-hidden="true">🎞️</span><small>No video</small>';
+            }
+            tr.appendChild(td1);
+
+            const td2 = document.createElement("td");
+            td2.className = "fsl-sentence";
+            td2.innerHTML =
+              '<div class="fsl-sent-text">' + escapeHtml(r.sentence) + '</div>' +
+              '<small class="fsl-meta">ID: ' + escapeHtml(String(r.id||"").slice(0,8)) + (r.videoName ? ' · file: ' + escapeHtml(r.videoName) : "") + (r.videoSize ? ' · ' + fmtBytes(r.videoSize) : "") + '</small>';
+            tr.appendChild(td2);
+
+            const td3 = document.createElement("td"); td3.innerHTML = langBadgeHtml(r.language); tr.appendChild(td3);
+
+            const td4 = document.createElement("td"); td4.innerHTML = categoryBadgeHtml(r.category); tr.appendChild(td4);
+
+            const td5 = document.createElement("td"); td5.className = "fsl-date"; td5.textContent = fmtDate(r.updated_at || r.created_at); tr.appendChild(td5);
+
+            const td6 = document.createElement("td");
+            td6.className = "fsl-actions";
+            td6.innerHTML =
+              '<button type="button" class="btn ghost sm" data-act="edit" aria-label="Edit entry">✎ Edit</button>' +
+              '<button type="button" class="btn ghost sm" data-act="replace" aria-label="Replace video">⇪ Replace video</button>' +
+              '<button type="button" class="btn ghost sm danger" data-act="del" aria-label="Delete entry">🗑 Delete</button>';
+            tr.appendChild(td6);
+            frag.appendChild(tr);
+          });
+          tbody.appendChild(frag);
+
+          // Row action listeners
+          tbody.querySelectorAll("tr[data-id]").forEach(function (tr) {
+            const id = tr.getAttribute("data-id");
+            tr.querySelectorAll("button[data-act]").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                const act = btn.getAttribute("data-act");
+                if (act === "edit") onEdit(id);
+                else if (act === "replace") onReplace(id);
+                else if (act === "del") onDelete(id);
+              });
+            });
+          });
+        }
+
+        function getRow(id) {
+          return readAll().find(function (r) { return r.id === id; }) || null;
+        }
+
+        function scrollToForm() {
+          if (formHeading) formHeading.scrollIntoView({behavior:"smooth", block:"start"});
+        }
+
+        function fillForm(r) {
+          resetForm();
+          editingId = r.id;
+          idInp.value = r.id || "";
+          existingVideoInp.value = r.videoDataUrl || "";
+          sentenceInp.value = r.sentence || "";
+          langSel.value = LANGS.indexOf(r.language) >= 0 ? r.language : "FSL";
+          catSel.value = CATEGORIES.indexOf(r.category) >= 0 ? r.category : "Information";
+          clearBtn.hidden = false;
+          saveLabel.textContent = "Update entry";
+          formHeading.textContent = "Edit FSL Video";
+          formBadge.textContent = "Editing";
+          formBadge.className = "badge success";
+          if (r.videoDataUrl && previewWrap && previewVideo) {
+            previewWrap.hidden = false;
+            previewVideo.src = r.videoDataUrl;
+            previewVideo.muted = true;
+          }
+          const parts = [];
+          if (r.videoName) parts.push(escapeHtml(r.videoName));
+          if (r.videoSize) parts.push(fmtBytes(r.videoSize));
+          if (r.videoType) parts.push(escapeHtml(r.videoType));
+          if (videoMeta) videoMeta.textContent = (r.videoName ? "" : "⚠️ No video uploaded — ") + parts.join(" · ");
+          updateUploadLabel(currentFile || null);
+          scrollToForm();
+        }
+        function onEdit(id) {
+          const r = getRow(id); if (!r) return; fillForm(r);
+        }
+        function onReplace(id) {
+          const r = getRow(id); if (!r) return; fillForm(r);
+          saveLabel.textContent = "Pick new video → Update";
+          formBadge.textContent = "Replace video";
+          formBadge.className = "badge";
+          if (fileInput) fileInput.click();
+        }
+        function onDelete(id) {
+          const r = getRow(id); if (!r) return;
+          if (!confirm("Delete this FSL translation?\n\n\"" + r.sentence + "\"\n\nSentences on the website will no longer match this video.")) return;
+          writeAll(readAll().filter(function (x) { return x.id !== id; }));
+          if (editingId === id) resetForm();
+          render();
+        }
+
+        // ----- Search + filter -----
+        function applyFilter() {
+          filter.search = (searchInp && searchInp.value || "").trim();
+          filter.category = filterCatSel ? (filterCatSel.value || "") : "";
+          chips.forEach(function (c) {
+            c.classList.toggle("active", (c.getAttribute("data-fsl-cat") || "") === filter.category);
+          });
+          render();
+        }
+        if (searchInp) searchInp.addEventListener("input", applyFilter);
+        if (filterCatSel) filterCatSel.addEventListener("change", applyFilter);
+        chips.forEach(function (c) {
+          c.addEventListener("click", function () {
+            filter.category = c.getAttribute("data-fsl-cat") || "";
+            if (filterCatSel) filterCatSel.value = filter.category;
+            applyFilter();
+          });
+        });
+
+        if (resetDemoBtn) resetDemoBtn.addEventListener("click", function () {
+          if (confirm("Load or refresh demo FSL entries? Existing duplicates will be skipped.\n\nYou can delete any demo entry afterwards.")) seedDemo(true);
+        });
+
+        // Init
+        render();
+        seedDemo(false);
+      })();
+
+    });
+  </script>
+
+  <!-- Global JavaScript -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

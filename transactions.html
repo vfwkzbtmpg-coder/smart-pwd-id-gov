@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transactions | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="top">
+
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span>
+        <strong>Smart PWD ID</strong>
+        <small>Cardholder Portal</small>
+      </span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a
+        class="active"
+        href="dashboard.html"
+        aria-current="page"
+      >Dashboard</a>
+      <a href="verify.html">Verify</a>
+      <a href="index.html">Home</a>
+    </nav>
+
+    <button
+      type="button"
+      class="access settings-trigger"
+      data-access
+      aria-label="Open Settings"
+    >
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+
+  </header>
+
+  <!-- NOTIFICATION TOAST ANCHOR -->
+  <div
+    id="toast-root"
+    class="toast-root"
+    aria-live="polite"
+    aria-atomic="true"
+    role="region"
+    aria-label="Notifications"
+  ></div>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="profile" >
+        <div class="photo" aria-hidden="true"><img class="profile-photo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=professional%20ID%20photo%20portrait%20of%20a%20smiling%20young%20filipino%20woman%20with%20dark%20hair%20wearing%20black%20blazer%20white%20collar%20shirt%20neutral%20gray%20background%20formal%20government%20ID%20style%20passport%20photo&image_size=square_hd" alt="User profile photo"></div>
+        <b></b>
+        <small>PWD Cardholder</small>
+      </div>
+
+      <nav
+        class="sidebar-nav"
+        aria-label="Cardholder navigation"
+      >
+        <a
+          href="dashboard.html"
+        >
+          <span aria-hidden="true">▦</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="my-pwd-id.html">
+          <span aria-hidden="true">▣</span>
+          <span>My Smart PWD ID</span>
+        </a>
+        <a href="benefits.html">
+          <span aria-hidden="true">⌁</span>
+          <span>Benefits</span>
+        </a>
+        <a href="transactions.html" aria-current="page">
+          <span aria-hidden="true">◷</span>
+          <span>Transactions</span>
+        </a>
+        <button
+          type="button"
+          class="sidebar-button"
+          data-access
+          aria-label="Open Settings"
+        >
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+        <a
+          class="sign-out"
+          href="index.html"
+        >
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <section class="dash">
+
+      <!-- This view is for an approved user. It's hidden for this prototype. -->
+      <div id="approved-view" hidden>
+        <div class="dashhead">
+          <div>
+            <span class="eyebrow">ACCOUNT ACTIVITY</span>
+            <h1>Transaction History</h1>
+            <p>A log of all verification events for your Smart PWD ID.</p>
+          </div>
+        </div>
+        <section class="panel">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Date & Time</th>
+                  <th scope="col">Method</th>
+                  <th scope="col">Service / Establishment</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+            <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- APPLICATION STATUS VIEW -->
+      <div id="application-status-view">
+        <div class="dashhead">
+          <div>
+            <span class="eyebrow">APPLICATION STATUS</span>
+            <h1>Transaction History</h1>
+            <p>Your transaction history will be available once your application is approved.</p>
+          </div>
+        </div>
+        <section class="panel">
+          <div class="panelhead">
+            <h3>Application Required</h3>
+          </div>
+          <p>To view your transaction history, you must first have an approved Smart PWD ID. Please complete the application process.</p>
+          <a href="application-form.html" class="btn primary">Apply Now</a>
+        </section>
+      </div>
+
+      <!-- NO HISTORY YET VIEW -->
+      <div id="no-history-view" hidden>
+        <div class="dashhead">
+          <div>
+            <span class="eyebrow">ACCOUNT ACTIVITY</span>
+            <h1>Transaction History</h1>
+            <p>No activity yet.</p>
+          </div>
+        </div>
+        <section class="panel">
+          <div class="panelhead">
+            <h3>Start Your Journey</h3>
+          </div>
+          <p>Start using your Smart PWD ID to see your transaction history here. Apply for your ID now!</p>
+          <a href="application-form.html" class="btn primary">Apply Now</a>
+        </section>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+      var SUPABASE_ANON_KEY =
+        'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+      }
+    })();
+  </script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      let toastTimer = null;
+      function dismissToast() {
+        const r = document.getElementById("toast-root");
+        if (!r) return;
+        r.innerHTML = "";
+        if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+      }
+      function showToast(props) {
+        const root = document.getElementById("toast-root");
+        if (!root) return;
+        dismissToast();
+        const title = props.title || "Notice";
+        const message = props.message || "";
+        const tone = (props.tone === "success" || props.tone === "error" || props.tone === "warning") ? props.tone : "info";
+        const actions = Array.isArray(props.actions) ? props.actions : [];
+        const auto = typeof props.autoDismissMs === "number" ? props.autoDismissMs : 0;
+        const icon = tone === "success" ? "✅" : tone === "error" || tone === "warning" ? "⚠" : "ⓘ";
+        const toast = document.createElement("div");
+        toast.className = "toast toast--" + tone;
+        toast.setAttribute("role", tone === "error" || tone === "warning" ? "alert" : "status");
+        const actionHtml = actions.map(function (a, i) {
+          const cls = a.primary ? "toast-action toast-action--primary" : "toast-action";
+          if (a.href) {
+            return '<a class="' + cls + '" href="' + String(a.href).replace(/"/g,"&quot;") + '" data-act="' + i + '">' + String(a.label || "Go") + "</a>";
+          }
+          return '<button type="button" class="' + cls + '" data-act="' + i + '">' + String(a.label || "OK") + '</button>';
+        }).join("");
+        toast.innerHTML =
+          '<div class="toast-icon" aria-hidden="true">' + icon + '</div>' +
+          '<div class="toast-body">' +
+            '<strong class="toast-title"></strong>' +
+            '<p class="toast-message"></p>' +
+            (actionHtml ? '<div class="toast-actions">' + actionHtml + '</div>' : '') +
+          '</div>' +
+          '<button type="button" class="toast-close" aria-label="Dismiss notification">×</button>';
+        toast.querySelector(".toast-title").textContent = title;
+        toast.querySelector(".toast-message").textContent = message;
+        toast.querySelectorAll("[data-act]").forEach(function (btn) {
+          const a = actions[Number(btn.getAttribute("data-act"))];
+          if (!a) return;
+          btn.addEventListener("click", function (e) {
+            if (typeof a.onClick === "function") { try { a.onClick(e, { dismiss: dismissToast }); } catch (_) {} }
+            if (a.autoDismiss !== false) dismissToast();
+          });
+        });
+        const close = toast.querySelector(".toast-close");
+        if (close) close.addEventListener("click", dismissToast);
+        root.appendChild(toast);
+        requestAnimationFrame(function () { toast.classList.add("toast--in"); });
+        if (auto > 0) toastTimer = setTimeout(dismissToast, auto);
+      }
+      function statusNeedsApp(status) {
+        const s = String(status || "Not Submitted").trim().toLowerCase();
+        return s !== "approved" && s !== "pending";
+      }
+      function fmtDateTime(ts) {
+        try { return new Date(ts).toLocaleString(); } catch (_) { return String(ts); }
+      }
+      function escHtml(v) {
+        return String(v == null ? '' : v)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        const profilePhoto = document.querySelector('.sidebar .profile .profile-photo');
+        const approvedView = document.getElementById('approved-view');
+        const statusView = document.getElementById('application-status-view');
+        const noHistoryView = document.getElementById('no-history-view');
+        function showView(view) {
+          approvedView.hidden  = (view !== 'approved');
+          statusView.hidden    = (view !== 'status');
+          noHistoryView.hidden = (view !== 'no_history');
+        }
+        function populateHistoryTable(history) {
+          const tbody = approvedView && approvedView.querySelector('table tbody');
+          if (!tbody) return;
+          tbody.innerHTML = '';
+          if (!history || history.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No transaction history found.</td></tr>';
+            return;
+          }
+          history.forEach(function (item) {
+            const statusClass = (item.status === 'Verified' || item.result === 'success') ? 'badge' : 'warning';
+            const method = (item.method || 'Manual').toString();
+            const tr = document.createElement('tr');
+            tr.innerHTML =
+              '<td>' + fmtDateTime(item.timestamp || item.created_at || Date.now()) + '</td>' +
+              '<td><span class="method ' + method.toLowerCase().split('/')[0] + '-method">' + method + '</span></td>' +
+              '<td>' + String(item.establishment || item.establishmentName || 'N/A') + (item.location ? ' · ' + String(item.location) : '') + '</td>' +
+              '<td><span class="' + statusClass + '">' + String(item.status || (item.result === 'success' ? 'Verified' : 'Failed')) + '</span></td>';
+            tbody.appendChild(tr);
+          });
+        }
+        async function loadLatestApplication(uid) {
+          try {
+            if (!window.supabase || typeof supabase.from !== 'function') return null;
+            const { data, error } = await supabase
+              .from('pwd_applications')
+              .select('id, status, submitted_at, reviewed_at, review_notes')
+              .eq('user_id', uid)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            if (error) return null;
+            return data || null;
+          } catch (_) { return null; }
+        }
+        function renderApplicationTimeline(app) {
+          const heading = statusView && statusView.querySelector('h1');
+          const description = statusView && statusView.querySelector('p');
+          const panel = statusView && statusView.querySelector('.panel');
+          if (!heading || !description || !panel || !app) return;
+
+          const status = String(app.status || 'Pending');
+          const rows = [{
+            when: app.submitted_at,
+            event: 'Application submitted',
+            details: 'Your form and uploaded documents were received by the system.',
+            badge: 'Submitted'
+          }];
+
+          if (status === 'Pending' || status === 'Under Review') {
+            rows.push({
+              when: app.submitted_at,
+              event: 'Screening in progress',
+              details: 'Authorized staff are reviewing your details and documents.',
+              badge: 'Pending'
+            });
+          } else if (status === 'Needs Revision') {
+            rows.push({
+              when: app.reviewed_at || app.submitted_at,
+              event: 'Correction requested',
+              details: app.review_notes || 'Please review your application and update the required information or files.',
+              badge: 'Needs revision'
+            });
+          } else if (status === 'Rejected') {
+            rows.push({
+              when: app.reviewed_at || app.submitted_at,
+              event: 'Application rejected',
+              details: app.review_notes || 'Your application was not approved. Please review the notes and apply again.',
+              badge: 'Rejected'
+            });
+          } else if (status === 'Approved') {
+            rows.push({
+              when: app.reviewed_at || app.submitted_at,
+              event: 'Application approved',
+              details: 'Your Smart PWD ID is ready. Verification activity will appear here after first use.',
+              badge: 'Approved'
+            });
+          }
+
+          heading.textContent = 'Application Activity';
+          description.textContent =
+            status === 'Approved'
+              ? 'Your ID is approved. Verification events will appear here after first use.'
+              : 'You already submitted an application. Here is the current progress.';
+
+          panel.innerHTML =
+            '<div class="panelhead"><h3>Application Timeline</h3></div>' +
+            '<div class="table-wrapper"><table><thead><tr>' +
+              '<th scope="col">Date & Time</th>' +
+              '<th scope="col">Event</th>' +
+              '<th scope="col">Details</th>' +
+              '<th scope="col">Status</th>' +
+            '</tr></thead><tbody>' +
+            rows.map(function (row) {
+              return '<tr>' +
+                '<td>' + escHtml(fmtDateTime(row.when || Date.now())) + '</td>' +
+                '<td>' + escHtml(row.event) + '</td>' +
+                '<td>' + escHtml(row.details) + '</td>' +
+                '<td><span class="' + (row.badge === 'Rejected' ? 'warning' : 'badge') + '">' + escHtml(row.badge) + '</span></td>' +
+              '</tr>';
+            }).join('') +
+            '</tbody></table></div>' +
+            (status === 'Rejected'
+              ? '<div style="margin-top:16px;"><a href="application-form.html" class="btn primary">Apply Again</a></div>'
+              : '');
+        }
+        function renderNoVerificationYet(app) {
+          const heading = noHistoryView && noHistoryView.querySelector('h1');
+          const description = noHistoryView && noHistoryView.querySelector('p');
+          const panel = noHistoryView && noHistoryView.querySelector('.panel');
+          if (!heading || !description || !panel) return;
+          heading.textContent = 'Transaction History';
+          description.textContent = 'No verification activity yet.';
+          panel.innerHTML =
+            '<div class="panelhead"><h3>Ready To Use</h3></div>' +
+            '<p>Your Smart PWD ID is active. Once an authorized office or establishment verifies it, that activity will appear here.</p>' +
+            (app && app.reviewed_at
+              ? '<p style="color:var(--muted);font-size:14px;">Approved on ' + escHtml(fmtDateTime(app.reviewed_at)) + '.</p>'
+              : '');
+        }
+        async function loadVerifications(uid) {
+          try {
+            if (!window.supabase || typeof supabase.from !== 'function') return null;
+            const { data, error, count } = await supabase
+              .from('verification_transactions')
+              .select('id, method, result, establishment, location, created_at', { count: 'exact' })
+              .eq('pwd_id', uid)
+              .order('created_at', { ascending: false })
+              .limit(100);
+            if (error) return null;
+            return { rows: data || [], count: typeof count === 'number' ? count : (data ? data.length : 0) };
+          } catch (_) { return null; }
+        }
+
+        const signOut = document.querySelector(".sign-out");
+        if (signOut) signOut.addEventListener("click", async (e) => {
+          e.preventDefault();
+          if (window.SmartPWDAuth) await SmartPWDAuth.logoutUser();
+          window.location.href = "login.html";
+        });
+        if (!window.SmartPWDAuth) { setTimeout(() => window.location.reload(), 300); return; }
+        const user = await SmartPWDAuth.requireAuth(["pwd", "admin"]);
+        if (!user) return;
+        const fullName = ((user.firstName || "") + " " + (user.lastName || "")).trim();
+        const nb = document.querySelector(".sidebar .profile b");
+        if (nb) nb.textContent = fullName || "Unnamed user";
+        try {
+          const sb = window.supabase;
+          if (sb && user.uid && profilePhoto) {
+            const photoResult = await sb
+              .from('pwd_applications')
+              .select('photo_url')
+              .eq('user_id', user.uid)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            const appPhoto = photoResult && photoResult.data && photoResult.data.photo_url;
+            if (appPhoto) {
+              profilePhoto.src = appPhoto;
+              profilePhoto.alt = (fullName || 'User') + ' 2x2 photo';
+            }
+          }
+        } catch (_) { /* keep the placeholder photo */ }
+        const currentPage = window.location.pathname.split("/").pop() || "transactions.html";
+        document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
+          const p = link.getAttribute("href");
+          link.classList.toggle("selected", p === currentPage);
+        });
+        const latestApp = await loadLatestApplication(user.uid);
+        const status = (latestApp && latestApp.status) || (user.application && user.application.status) || "Not Submitted";
+        if (statusNeedsApp(status)) {
+          showView('status');
+          setTimeout(function () {
+            showToast({
+              tone: "warning",
+              title: "Submit your PWD application first",
+              message: "Transactions (verification event history) appear here once your PWD application is approved.",
+              autoDismissMs: 12000,
+              actions: [
+                { label: "Submit Application", primary: true, href: "application-form.html" },
+                { label: "Go to Dashboard", href: "dashboard.html" },
+                { label: "Dismiss", onClick: function (_e, ctx) { ctx.dismiss(); }, autoDismiss: true }
+              ]
+            });
+          }, 450);
+          return;
+        }
+        if (status !== 'Approved') {
+          showView('status');
+          renderApplicationTimeline(latestApp || { status: status });
+          return;
+        }
+        const rows = await loadVerifications(user.uid);
+        if (rows && rows.rows && rows.rows.length > 0) {
+          showView('approved');
+          populateHistoryTable(rows.rows);
+        } else {
+          showView('no_history');
+          renderNoVerificationYet(latestApp);
+        }
+      });
+    })();
+  </script>
+
+  <!-- Global JavaScript -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

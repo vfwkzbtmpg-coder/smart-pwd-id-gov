@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ID Applications | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root { --navy: #1e3a5f; --navy-dark: #152a47; --navy-light: #2c4a6e; --orange: #ff8c42; --orange-light: #ffa366; --bg: #eef1f6; --card: #ffffff; --text: #1e293b; --muted: #94a3b8; --line: #e2e8f0; --green: #10b981; --red: #ef4444; }
+    body { background: var(--bg); margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .top { display: none; }
+    .dashboard { display: flex; min-height: 100vh; gap: 0; }
+    .sidebar { width: 260px; background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%); color: #fff; padding: 20px 16px; flex-shrink: 0; display: flex; flex-direction: column; border-radius: 0; position: sticky; top: 0; height: 100vh; min-height: 0; overflow: hidden; box-sizing: border-box; }
+    .sidebar .profile { text-align: center; margin-bottom: 10px; flex-direction: column; gap: 6px; }
+    .sidebar .profile .photo { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 3px solid rgba(255,255,255,0.2); display: grid; place-items: center; font-size: 22px; margin: 0 auto; }
+    .sidebar .profile-info { text-align: center; }
+    .sidebar .profile-info b { display: block; font-size: 16px; color: #fff; margin-bottom: 2px; }
+    .sidebar .profile-info small { color: rgba(255,255,255,0.6); font-size: 11px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 1px; flex: 1; min-height: 0; }
+    .sidebar-nav a, .sidebar-nav button { display: flex; align-items: center; gap: 10px; padding: 5px 10px; color: rgba(255,255,255,0.65); text-decoration: none; border-radius: 10px; font-size: 13px; font-weight: 500; transition: all .2s ease; border: none; background: none; cursor: pointer; width: 100%; text-align: left; position: relative; }
+    .sidebar-nav a span[aria-hidden="true"], .sidebar-nav button span[aria-hidden="true"] { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-size: 14px; background: rgba(255,255,255,0.08); flex-shrink: 0; transition: all .2s ease; }
+    .sidebar-nav a:hover, .sidebar-nav button:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .sidebar-nav a:hover span[aria-hidden="true"], .sidebar-nav button:hover span[aria-hidden="true"] { background: rgba(255,255,255,0.16); transform: scale(1.05); }
+    .sidebar-nav a.selected { background: rgba(255,255,255,0.1); color: #fff; }
+    .sidebar-nav a.selected span[aria-hidden="true"] { background: var(--orange); box-shadow: 0 4px 10px rgba(255,140,66,0.4); }
+    .sidebar-nav .sidebar-icon { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+    .sidebar .sign-out { margin-top: auto; color: rgba(255,255,255,0.5); }
+    .sidebar .sign-out span[aria-hidden="true"] { background: rgba(239,68,68,0.18) !important; }
+    .dash { flex: 1; padding: 32px 36px; }
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 12px; }
+    .doc-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(30,58,95,0.05); }
+    .doc-label { padding: 10px 14px; font-size: 12px; font-weight: 700; color: var(--text); background: #f8fafc; border-bottom: 1px solid var(--line); }
+    .doc-thumb { aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; background: #f1f5f9; position: relative; }
+    .doc-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .doc-view { position: absolute; bottom: 8px; right: 8px; background: var(--navy); color: #fff; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; border: 0; cursor: pointer; font-family: inherit; transition: background .2s ease; }
+    .doc-view:hover { background: var(--navy-light); }
+    .doc-file { flex-direction: column; gap: 8px; font-size: 32px; }
+    .doc-file .doc-view { position: static; font-size: 12px; }
+    .doc-empty { color: var(--muted); font-size: 13px; font-weight: 600; }
+    /* Status filter chips — let the admin open any application (Approved or
+       Rejected too) so its digital ID card can be previewed. */
+    .app-filter { display: flex; flex-wrap: wrap; gap: 8px; }
+    .app-filter button { border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 12px; font-weight: 700; padding: 7px 15px; border-radius: 999px; cursor: pointer; transition: all .2s ease; }
+    .app-filter button:hover { border-color: var(--navy-light); color: var(--navy); transform: translateY(-1px); }
+    .app-filter button.selected { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: 0 6px 16px rgba(30,58,95,0.25); }
+    .app-status { display: inline-block; margin: 4px 0; font-size: 11px; font-weight: 800; letter-spacing: .02em; padding: 3px 11px; border-radius: 999px; background: #eef1f6; color: var(--muted); }
+    .app-status.pending { background: #fff4e8; color: #b45309; }
+    .app-status.approved { background: #e7f8f1; color: #047857; }
+    .app-status.rejected { background: #fdecec; color: #b91c1c; }
+    /* In-page document viewer overlay (keeps the admin on this screen) */
+    .doc-lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(9,16,28,0.9); display: flex; align-items: center; justify-content: center; padding: 40px 24px; animation: fadeIn .18s ease; }
+    .doc-lightbox img { max-width: 92vw; max-height: 82vh; border-radius: 12px; background: #fff; box-shadow: 0 24px 70px rgba(0,0,0,0.55); }
+    .doc-lightbox iframe { width: 90vw; height: 82vh; border: 0; border-radius: 12px; background: #fff; }
+    .doc-lightbox .lb-close { position: absolute; top: 18px; right: 22px; width: 42px; height: 42px; border-radius: 50%; border: 0; background: rgba(255,255,255,0.14); color: #fff; font-size: 24px; line-height: 1; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+    .doc-lightbox .lb-close:hover { background: rgba(255,255,255,0.28); transform: rotate(90deg); }
+    .doc-lightbox .lb-caption { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+
+    /* ---------- Digital ID card ----------
+       Ported 1:1 from the approved card design: same markup, same class
+       names, same clamp()-driven sizing, same button set. Everything is
+       scoped to #idCardPreview so the design's generic class names (.card,
+       .face, .field, .value, .photo, .auth …) cannot leak into style.css.
+       Lengths the design expressed in vw use cqw instead, so the card keeps
+       identical proportions inside the 520px detail panel. */
+    #idCardPreview { container-type: inline-size; max-width: 900px; margin: 12px auto 0; font-family: Arial, Helvetica, sans-serif; color: #111; font-size: 12px; }
+    #idCardPreview, #idCardPreview * { box-sizing: border-box; }
+    #idCardPreview .stage { display: grid; place-items: center; perspective: 1400px; width: 100%; }
+    #idCardPreview .card-intro { width: 100%; transform-style: preserve-3d; animation: id-card-rise 1.8s cubic-bezier(.22,.8,.2,1) both; }
+    #idCardPreview .card-float { width: 100%; transform-style: preserve-3d; animation: id-card-idle 15s cubic-bezier(.45,0,.55,1) 1.8s infinite; will-change: transform; }
+    #idCardPreview .stage.dragging .card-float { animation-play-state: paused; }
+    @keyframes id-card-rise {
+      0% { opacity: 0; transform: translate3d(0,36px,-80px) rotateX(12deg) rotateY(-8deg) scale(.97); }
+      72% { opacity: 1; transform: translate3d(0,-3px,0) rotateX(-1deg) rotateY(1deg) scale(1.005); }
+      100% { opacity: 1; transform: translate3d(0,0,0) rotateX(0) rotateY(0) scale(1); }
+    }
+    @keyframes id-card-idle {
+      0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(-1.5deg); }
+      50% { transform: translateY(-3px) rotateX(1deg) rotateY(1.5deg); }
+    }
+    #idCardPreview .card { width: min(100%, 900px); aspect-ratio: 1.586; position: relative; transform-style: preserve-3d; transition: transform .85s cubic-bezier(.2,.75,.25,1); cursor: grab; touch-action: none; will-change: transform; }
+    #idCardPreview .card:active { cursor: grabbing; }
+    #idCardPreview .card:focus-visible { outline: 3px solid var(--orange); outline-offset: 6px; border-radius: 18px; }
+    #idCardPreview .card.flipped { transform: rotateY(180deg); }
+    #idCardPreview .face { position: absolute; inset: 0; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #fff; border: 1px solid #ccc; border-radius: clamp(10px,2cqw,22px); box-shadow: 0 14px 35px #0002; }
+    #idCardPreview .front { display: block; padding: clamp(8px,1.5cqw,16px); background: #fff center/100% 100% no-repeat; }
+    #idCardPreview .front::before { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.18); pointer-events: none; }
+    #idCardPreview .front > * { position: relative; z-index: 1; }
+    #idCardPreview .back { background: #fff center/100% 100% no-repeat; transform: rotateY(180deg); padding: clamp(12px,2.5cqw,28px); display: grid; grid-template-rows: auto 1fr auto; gap: clamp(8px,1.5cqw,16px); }
+    #idCardPreview .back::before { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.18); pointer-events: none; }
+    #idCardPreview .back > * { position: relative; z-index: 1; }
+    #idCardPreview .header { display: none; }
+    #idCardPreview .flag { width: 100%; aspect-ratio: 1.45; border-radius: 50%; background: linear-gradient(to bottom,#0645a5 0 50%,#d51c30 50%); border: 1px solid #ddd; }
+    #idCardPreview .seal { width: 100%; aspect-ratio: 1; border: 2px solid #c99b24; border-radius: 50%; display: grid; place-items: center; color: #123f8a; font-weight: 900; font-size: clamp(10px,1.6cqw,18px); }
+    #idCardPreview .republic { font-size: clamp(6px,1.15cqw,12px); font-weight: 800; letter-spacing: .13em; }
+    #idCardPreview .city { font-family: Georgia, serif; font-size: clamp(15px,3.5cqw,34px); font-weight: bold; line-height: 1.08; margin: 3px 0; }
+    #idCardPreview .office { font-size: clamp(8px,1.6cqw,16px); }
+    #idCardPreview .content { height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(95px,29%) minmax(0,1fr); gap: clamp(10px,2.3cqw,25px); align-items: center; padding: clamp(8px,2%,18px) 0 0; background: transparent; }
+    #idCardPreview .left { display: grid; grid-template-rows: 1fr auto; gap: clamp(8px,1.5cqw,15px); height: 100%; min-height: 0; align-items: center; }
+    /* height:auto / flex:none neutralise the global .photo rule in style.css */
+    #idCardPreview .photo { width: 92%; height: auto; flex: none; justify-self: center; aspect-ratio: .82; max-height: 90%; align-self: center; border: 2px solid #222; border-radius: clamp(8px,1.5cqw,15px); overflow: hidden; display: grid; place-items: center; background: #f5f5f5; color: #777; font-size: clamp(10px,1.5cqw,14px); text-align: center; }
+    #idCardPreview .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #idCardPreview .signature { text-align: center; font-size: clamp(8px,1.25cqw,12px); font-weight: 800; letter-spacing: .08em; }
+    #idCardPreview .sigline { height: clamp(20px,3cqw,35px); border-bottom: 1.5px solid #111; margin-bottom: 4px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+    #idCardPreview .sigline span { font-size: clamp(7px,1cqw,10px); color: #888; font-weight: 500; letter-spacing: 0; }
+    #idCardPreview .sigline img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    #idCardPreview .fields { display: grid; gap: clamp(10px,2cqw,22px); min-width: 0; }
+    #idCardPreview .field { display: grid; grid-template-columns: minmax(105px,42%) minmax(0,1fr); align-items: end; gap: clamp(5px,1cqw,12px); min-width: 0; }
+    #idCardPreview .field label { font-size: clamp(8px,1.55cqw,15px); font-weight: 800; line-height: 1.15; }
+    #idCardPreview .value { min-width: 0; border-bottom: 1.5px solid #222; padding: 0 2px 4px; text-align: center; font-weight: 800; font-size: clamp(10px,1.9cqw,19px); line-height: 1.15; overflow-wrap: anywhere; }
+    #idCardPreview .value.small { font-size: clamp(9px,1.55cqw,16px); }
+    #idCardPreview .notice { text-align: center; font-weight: 900; color: #9d1b1b; font-size: clamp(8px,1.2cqw,13px); line-height: 1.4; letter-spacing: .02em; background: #fff; padding: clamp(4px,1cqw,8px) clamp(6px,1.5cqw,14px); border-radius: 6px; }
+    #idCardPreview .backbox { border: 1.5px solid #333; border-radius: 12px; padding: clamp(10px,2cqw,22px); display: grid; grid-template-rows: auto 1fr auto; gap: 12px; }
+    #idCardPreview .backtitle { text-align: center; font-weight: 900; font-size: clamp(11px,2cqw,20px); }
+    #idCardPreview .backfields { display: grid; align-content: center; gap: clamp(7px,1.4cqw,14px); font-size: clamp(9px,1.5cqw,15px); }
+    #idCardPreview .backfield { display: grid; grid-template-columns: max-content 1fr; gap: 8px; }
+    #idCardPreview .blank { border-bottom: 1px solid #555; min-width: 0; }
+    /* the demo's counters below are reset because style.css styles a global .auth block */
+    #idCardPreview .auth { text-align: center; font-weight: 800; font-size: clamp(8px,1.3cqw,13px); min-height: 0; display: block; padding: 0; background: none; }
+    #idCardPreview .foot { font-size: clamp(7px,1.1cqw,11px); color: #666; text-align: center; }
+    #idCardPreview .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 18px 0 10px; }
+    #idCardPreview button { border: 1px solid #222; background: #111; color: #fff; padding: 10px 15px; border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    #idCardPreview button.secondary { background: #fff; color: #111; }
+    #idCardPreview input[type=file] { display: none; }
+    /* 16 selectable front backgrounds, one per Metro Manila LGU */
+    #idCardPreview .bggrid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; padding: 12px; margin: 0 0 10px; border: 1px solid #e2e2e2; border-radius: 14px; background: #fafafa; }
+    #idCardPreview .bgswatch { padding: 0; border: 2px solid transparent; border-radius: 10px; background: #fff; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+    #idCardPreview .bgswatch img, #idCardPreview .bgmissing { width: 100%; aspect-ratio: 1.6; object-fit: cover; display: block; background: #f0f0f0; }
+    #idCardPreview .bgmissing { display: grid; place-items: center; color: #aaa; font-size: 9px; font-weight: 700; }
+    #idCardPreview .bgswatch b { font-size: 10px; font-weight: 700; color: #333; padding: 4px 3px; text-align: center; line-height: 1.2; }
+    #idCardPreview .bgswatch:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,.14); }
+    #idCardPreview .bgswatch.active { border-color: #ff8c42; box-shadow: 0 0 0 3px rgba(255,140,66,.25); }
+    #idCardPreview .bgswatch[data-empty="1"] { cursor: default; opacity: .5; }
+    #idCardPreview .bgswatch[data-empty="1"]:hover { transform: none; box-shadow: none; }
+    #idCardPreview .bgsavenote { margin: -2px 0 12px; font-size: 12px; font-weight: 700; text-align: center; color: #08784a; }
+    #idCardPreview .bgsavenote.error { color: #b42318; }
+    #idCardPreview .bgsavenote[hidden] { display: none; }
+    /* NFC reader control — arms the USB reader so the next tapped card is
+       bound to this holder. Only rendered for an approved application. */
+    #idCardPreview .nfc-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 0 0 12px; }
+    #idCardPreview .nfc-note { font-size: 12px; font-weight: 700; text-align: center; color: #08784a; }
+    #idCardPreview .nfc-note.busy { color: #b45309; }
+    #idCardPreview .nfc-note.error { color: #b42318; }
+    #idCardPreview .nfc-note[hidden] { display: none; }
+    #idCardPreview .nfc-note.busy::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: var(--orange); animation: nfcScanPulse 1.2s ease-in-out infinite; }
+    #idCardPreview .nfc-row button[disabled] { opacity: .6; cursor: progress; }
+    @keyframes nfcScanPulse { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.2); } }
+    #idCardPreview .hint { text-align: center; color: #666; font-size: 12px; line-height: 1.5; }
+    @container (max-width: 520px) {
+      #idCardPreview .card { width: 100%; }
+      #idCardPreview .front { padding: 7px; }
+      #idCardPreview .content { grid-template-columns: 25% minmax(0,1fr); gap: 7px; padding: 5px 0 0; }
+      #idCardPreview .left { gap: 5px; }
+      #idCardPreview .photo { width: 92%; border-width: 1px; border-radius: 6px; }
+      #idCardPreview .fields { gap: clamp(5px,1.7cqw,9px); }
+      #idCardPreview .field { grid-template-columns: minmax(68px,40%) minmax(0,1fr); gap: 4px; }
+      #idCardPreview .field label { font-size: clamp(7px,1.8cqw,9px); }
+      #idCardPreview .value { font-size: clamp(8px,2.2cqw,11px); padding-bottom: 2px; border-bottom-width: 1px; }
+      #idCardPreview .value.small { font-size: clamp(7px,1.9cqw,10px); }
+      #idCardPreview .signature { font-size: 7px; }
+      #idCardPreview .sigline { height: 13px; }
+      #idCardPreview .back { padding: 7px; gap: 5px; }
+      #idCardPreview .backbox { padding: 7px; gap: 7px; }
+      #idCardPreview .backfields { gap: 5px; }
+      #idCardPreview .bggrid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px; padding: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #idCardPreview .card { transition: none; }
+      #idCardPreview .card-intro, #idCardPreview .card-float { animation: none; will-change: auto; }
+    }
+    /* Admin side of the applicant's private message thread. Scoped to the
+       detail modal so the shared .msg / .bubble names stay contained. */
+    #detailModal .msg-sub { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+    #detailModal .msg-thread { display: grid; gap: 12px; max-height: 360px; overflow-y: auto; padding: 4px 4px 12px; margin: 14px 0 0; }
+    #detailModal .msg-empty { color: var(--muted); font-size: 13.5px; text-align: center; padding: 24px 14px; background: #f8fafc; border: 1px dashed var(--line); border-radius: 12px; }
+    #detailModal .msg { display: flex; }
+    #detailModal .msg.out { justify-content: flex-end; }
+    #detailModal .msg > div { max-width: 78%; }
+    #detailModal .msg .bubble { padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+    #detailModal .msg.out .bubble { background: var(--navy); color: #fff; border-bottom-right-radius: 4px; }
+    #detailModal .msg.in .bubble { background: #f1f5f9; color: var(--text); border-bottom-left-radius: 4px; }
+    #detailModal .msg-meta { font-size: 11px; color: var(--muted); margin-top: 5px; }
+    #detailModal .msg.out .msg-meta { text-align: right; }
+    #detailModal .msg-composer { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 8px; }
+    /* "Auto choose this" — the three standard staff messages, one click each. */
+    #detailModal .msg-presets { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-top: 14px; }
+    #detailModal .preset-label { grid-column: 1 / -1; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    #detailModal .msg-preset { text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-family: inherit; cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+    #detailModal .msg-preset b { display: block; font-size: 12.5px; color: var(--text); margin-bottom: 3px; }
+    #detailModal .msg-preset small { display: block; font-size: 11px; color: var(--muted); line-height: 1.35; }
+    #detailModal .msg-preset:hover { transform: translateY(-2px); border-color: var(--orange); box-shadow: 0 6px 14px rgba(30,58,95,.1); }
+    #detailModal .msg-preset.active { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,140,66,.22); }
+    @media (max-width: 700px) { #detailModal .msg-presets { grid-template-columns: 1fr; } }
+    #detailModal .msg-composer textarea { width: 100%; min-height: 52px; max-height: 160px; resize: vertical; padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; font: inherit; font-size: 14px; color: var(--text); background: #fff; }
+    #detailModal .msg-composer textarea:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,140,66,.22); }
+    #detailModal .msg-composer .btn { padding: 11px 22px; }
+    @media print {
+      #idCardPreview .controls, #idCardPreview .hint { display: none !important; }
+      #idCardPreview .stage { display: block; }
+      #idCardPreview .card { width: 100%; max-width: 900px; box-shadow: none; }
+      #idCardPreview .face { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION -->
+  <header class="top">
+
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span class="brand-text">
+        <strong>Smart PWD ID</strong>
+        <small>Administration</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="admin.html" class="active">Admin</a>
+      <a href="verify.html">Verify</a>
+      <a href="index.html">Home</a>
+    </nav>
+
+    <button
+      type="button"
+      class="access settings-trigger"
+      data-access
+      aria-label="Open accessibility and system settings"
+    >
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+
+  </header>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="profile">
+        <div class="photo" aria-hidden="true">◆</div>
+        <div class="profile-info">
+          <b>System Administrator</b>
+          <small>admin@smartpwd.ph</small>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Admin dashboard">
+        <a href="admin.html">
+          <span aria-hidden="true">▦</span>
+          <span>Overview</span>
+        </a>
+        <a href="applications.html" class="selected">
+          <span aria-hidden="true">▣</span>
+          <span>ID Applications</span>
+        </a>
+        <a href="verification-logs.html">
+          <span aria-hidden="true">⌁</span>
+          <span>Verification Logs</span>
+        </a>
+        <a href="establishments.html">
+          <span aria-hidden="true">🏪</span>
+          <span>Establishments</span>
+        </a>
+        <a href="flagged.html">
+          <span aria-hidden="true">⚑</span>
+          <span>Flagged Activity</span>
+        </a>
+        <a href="reports.html">
+          <span aria-hidden="true">▤</span>
+          <span>Reports</span>
+        </a>
+        <a href="fsl-library.html">
+          <span aria-hidden="true">🎬</span>
+          <span>FSL Video Library</span>
+        </a>
+
+        <button type="button" class="sidebar-button" data-access aria-label="Open Settings">
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+        <a class="sign-out" href="login.html">
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <section id="main-content" class="dash">
+      <div class="dashhead">
+        <div class="dash-title">
+          <span class="eyebrow">ADMINISTRATION</span>
+          <h1>ID Applications</h1>
+          <p>Review and process new Smart PWD ID applications.</p>
+        </div>
+      </div>
+      <section class="panel">
+        <div class="panelhead">
+          <h3>Applications</h3>
+          <div class="app-filter" id="app-filter" role="tablist" aria-label="Filter applications by status">
+            <button type="button" data-status="Pending" role="tab" aria-selected="false">Pending</button>
+            <button type="button" data-status="Approved" role="tab" aria-selected="false">Approved</button>
+            <button type="button" data-status="Rejected" role="tab" aria-selected="false">Rejected</button>
+            <button type="button" class="selected" data-status="All" role="tab" aria-selected="true">All</button>
+          </div>
+        </div>
+        <div id="applications-list">
+          <p>Loading applications...</p>
+        </div>
+      </section>
+    </section>
+
+  </main>
+
+  <!-- SUPABASE AUTH (same as admin.html) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script src="src/supabaseClient.js"></script>
+  <script src="js/auth.js"></script>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      // Sidebar active state
+      const currentPage = window.location.pathname.split("/").pop();
+      document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
+        const linkPage = link.getAttribute("href");
+        if (linkPage === currentPage) {
+          link.classList.add("selected");
+        } else {
+          link.classList.remove("selected");
+        }
+      });
+
+      const appListContainer = document.getElementById('applications-list');
+      const appFilter = document.getElementById('app-filter');
+      // Default to "All" so the list is never empty just because every
+      // application has already been decided (Approved / Rejected).
+      let activeStatus = 'All';
+
+      function renderStatusBanner(message, tone) {
+        let banner = document.getElementById('applist-banner');
+        if (!banner) {
+          banner = document.createElement('div');
+          banner.id = 'applist-banner';
+          banner.className = 'login-message';
+          banner.style.marginBottom = '12px';
+          banner.setAttribute('role', 'status');
+          banner.setAttribute('aria-live', 'polite');
+          appListContainer.parentNode.insertBefore(banner, appListContainer);
+        }
+        banner.className = 'login-message' + (tone === 'success' ? ' success' : tone === 'error' ? ' error' : tone === 'info' ? ' success' : '');
+        banner.textContent = message || '';
+        if (!message) banner.style.display = 'none';
+        else banner.style.display = '';
+      }
+      function pushEstablishmentsFlash(payload) {
+        try {
+          sessionStorage.setItem('establishments_flash', JSON.stringify(payload || null));
+        } catch (_) {}
+      }
+
+      async function openApplicationDetail(appId, token) {
+        if (document.getElementById("detailModal")) return;
+
+        const response = await fetch('/api/applications', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            return alert('Could not fetch application details. Please log in again.');
+        }
+        const payload = await response.json();
+        const list = (payload && Array.isArray(payload.applications)) ? payload.applications : (Array.isArray(payload) ? payload : []);
+        const app = list.find(a => a.id === appId);
+
+        if (!app) {
+            alert('Application not found.');
+            return;
+        }
+
+        const backdrop = document.createElement("div");
+        backdrop.className = "settings-backdrop";
+        backdrop.id = "detailBackdrop";
+
+        const modal = document.createElement("div");
+        modal.id = "detailModal";
+        modal.className = "settings-panel";
+        modal.setAttribute("role", "dialog");
+        modal.setAttribute("aria-modal", "true");
+        modal.setAttribute("aria-labelledby", "detailTitle");
+
+        function docCard(label, url, placeholder) {
+          if (url) {
+            const isImg = /^data:image|^https?:\/\/.+\.(png|jpe?g|gif|webp|bmp|svg)/i.test(url);
+            if (isImg) {
+              return '<div class="doc-card"><div class="doc-label">' + label + '</div><div class="doc-thumb"><img src="' + url + '" alt="' + label + '" loading="lazy"><button type="button" class="doc-view" data-doc-label="' + label + '">View full size</button></div></div>';
+            }
+            return '<div class="doc-card"><div class="doc-label">' + label + '</div><div class="doc-thumb doc-file"><span>📄</span><button type="button" class="doc-view" data-doc-label="' + label + '" data-doc-url="' + url + '">View document</button></div></div>';
+          }
+          return '<div class="doc-card"><div class="doc-label">' + label + '</div><div class="doc-thumb doc-empty"><span>' + (placeholder || 'Not uploaded') + '</span></div></div>';
+        }
+
+        function esc(v) {
+          return String(v == null ? '' : v)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+        }
+
+        function fmtDay(v) {
+          return v ? new Date(v).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '—';
+        }
+
+        // The card prints the birthdate in long form ("OCTOBER 15, 2000").
+        // The form collects it as dd/mm/yyyy, so both that and ISO are accepted.
+        function fmtBirthdate(v) {
+          const raw = String(v == null ? '' : v).trim();
+          if (!raw) return '—';
+          let d = null;
+          const dmy = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+          const ymd = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+          if (dmy) d = new Date(Number(dmy[3]), Number(dmy[2]) - 1, Number(dmy[1]));
+          else if (ymd) d = new Date(Number(ymd[1]), Number(ymd[2]) - 1, Number(ymd[3]));
+          if (!d || isNaN(d.getTime())) return raw.toUpperCase();
+          return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
+        }
+
+        // The applicant's digital PWD ID, built with the approved card design.
+        // Markup is the design's own; only the values are bound to live data.
+        // id_number → ID NO, birthdate → DATE OF BIRTH, disability_type → TYPE
+        // OF DISABILITY, sex → SEX, and the emergency contact fields come from
+        // emergency_name (guard's name), emergency_contact (guard's number),
+        // address and blood_type on the application.
+        function buildIdCard(app) {
+          const photo = app.photoUrl
+            ? '<img src="' + esc(app.photoUrl) + '" alt="Applicant photo">'
+            : 'Click Upload Photo<br>to add sample image';
+          // Rows created before migration 005 kept the birthdate in disability_type.
+          const birthdate = app.birthdate || app.disabilityType || '';
+          // The signature the applicant uploaded with the form fills the
+          // SIGNATURE line on its own; the upload button stays available to
+          // override it for a single preview.
+          const signature = app.signatureUrl
+            ? '<img id="sigImg" src="' + esc(app.signatureUrl) + '" alt="Applicant signature">'
+            : '<span id="sigPlaceholder">signature here</span><img id="sigImg" alt="Uploaded signature" hidden>';
+          return `
+            <div id="idCardPreview">
+              <div class="stage" id="cardStage">
+                <div class="card-intro">
+                  <div class="card-float">
+                <div class="card" id="card" tabindex="0" role="button" aria-label="Sample ID card. Press Enter or Space to flip.">
+                  <section class="face front" aria-label="Front of sample card">
+                    <div class="content">
+                      <div class="left">
+                        <label class="photo" for="photoInput" id="photoBox">${photo}</label>
+                        <div class="signature"><div class="sigline" id="sigLine">${signature}</div>SIGNATURE</div>
+                      </div>
+                      <div class="fields">
+                        <div class="field"><label>ID NO:</label><div class="value">${esc(app.idNumber || 'PENDING')}</div></div>
+                        <div class="field"><label>NAME:</label><div class="value">${esc(String(app.userName || '—').toUpperCase())}</div></div>
+                        <div class="field"><label>TYPE OF DISABILITY:</label><div class="value">${esc(app.disabilityType || '—')}</div></div>
+                        <div class="field"><label>DATE OF BIRTH:</label><div class="value small">${esc(fmtBirthdate(birthdate))}</div></div>
+                        <div class="field"><label>SEX:</label><div class="value">${esc(app.sex || '—')}</div></div>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="face back" aria-label="Back of sample card">
+                    <div class="notice">THE HOLDER OF THIS CARD IS A PERSON WITH DISABILITY AND IS ENTITLED TO ALL BENEFITS AND PRIVILEGES IN ACCORDANCE WITH REPUBLIC ACTS 9442 AND 10754 NON-TRANSFERABLE. VALID FOR 3 YEARS.<br>ANY VIOLATION IS PUNISHABLE BY LAW. VALID ANYWHERE IN THE PHILIPPINES.</div>
+                    <div class="backbox"><div class="backtitle">IN CASE OF EMERGENCY, PLEASE NOTIFY:</div><div class="backfields"><div class="backfield">Name:<span class="blank">${esc(app.emergencyName || '')}</span></div><div class="backfield">Contact No.:<span class="blank">${esc(app.emergencyContact || app.userMobile || '')}</span></div><div class="backfield">Address:<span class="blank">${esc(app.address || '')}</span></div><div class="backfield">Blood type:<span class="blank">${esc(app.bloodType || '')}</span></div><div class="backfield">Date issued:<span class="blank">${esc(fmtDay(app.reviewedAt || app.submittedAt))}</span></div><div class="backfield">Valid until:<span class="blank">${esc(fmtDay(app.validUntil))}</span></div></div><div class="auth">____________________________<br>AUTHORIZED SIGNATURE (DEMO)</div></div>
+                    <div class="foot">DEMO DESIGN ONLY • NOT VALID FOR IDENTIFICATION OR DISCOUNT VERIFICATION</div>
+                  </section>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="controls"><button id="flipBtn" type="button">Flip Front / Back</button><button class="secondary" id="frontBtn" type="button">Show Front</button><button class="secondary" id="backBtn" type="button">Show Back</button><button class="secondary" id="printBtn" type="button">Print Demo</button><button class="secondary" id="uploadBtn" type="button">Upload Sample Photo</button><input id="photoInput" type="file" accept="image/*" hidden><button class="secondary" id="bgFrontBtn" type="button">Choose Front Background</button><button class="secondary" id="bgBackBtn" type="button">Upload Back Background</button><input id="bgBackInput" type="file" accept="image/*" hidden><button class="secondary" id="clearBgFrontBtn" type="button">Clear Front Bg</button><button class="secondary" id="clearBgBackBtn" type="button">Clear Back Bg</button><button class="secondary" id="sigBtn" type="button">Upload Signature</button><input id="sigInput" type="file" accept="image/*" hidden></div>
+              <div class="bggrid" id="bgGrid" hidden></div><p class="bgsavenote" id="bgSaveNote" role="status" aria-live="polite" hidden></p>
+              ${app.status === 'Approved' ? `
+              <div class="nfc-row" id="nfcRow"><button id="readerNfcBtn" type="button">Reader NFC Scan</button><button class="secondary" id="readerNfcCancelBtn" type="button" hidden>Cancel Scan</button><span class="nfc-note" id="nfcNote" role="status" aria-live="polite" hidden></span></div>` : ''}
+              <p class="hint">Responsive sample card. Use the buttons to flip the card or print the demo. This is not an official government ID.</p>
+            </div>`;
+        }
+
+        modal.innerHTML = `
+            <div class="sp-head">
+                <div>
+                    <div class="sp-title" id="detailTitle">Application Details</div>
+                    <div class="sp-sub">Reviewing application for ${app.userName || 'Unnamed applicant'}</div>
+                </div>
+                <button class="sp-close" id="detailClose" aria-label="Close details">×</button>
+            </div>
+            <div class="sp-panes">
+                <div class="app-detail-content">
+                    <h3>Applicant Information</h3>
+                    <div class="detail-grid">
+                        <div><small>Full Name</small><strong>${app.userName || '—'}</strong></div>
+                        <div><small>Email</small><strong>${app.userEmail || 'Not provided'}</strong></div>
+                        <div><small>Contact No.</small><strong>${app.userMobile || 'Not provided'}</strong></div>
+                        <div><small>Status</small><strong>${app.status || '—'}</strong></div>
+                        <div class="span2"><small>ID Number (assigned)</small><strong>${app.idNumber || 'Pending'}</strong></div>
+                    </div>
+
+                    <h3>Submitted Documents</h3>
+                    <div class="doc-grid">
+                        ${docCard('2x2 Picture', app.photoUrl)}
+                        ${docCard('Valid ID / Document', app.idFrontUrl)}
+                        ${docCard('Medical Certificate', app.medicalCertUrl)}
+                        ${docCard('Old ID (Optional)', app.idBackUrl)}
+                        ${docCard('Affidavit / Barangay Cert', app.barangayCertUrl)}
+                    </div>
+
+                    <h3>Digital ID Card</h3>
+                    ${buildIdCard(app)}
+
+                    <h3>Messages</h3>
+                    <p class="msg-sub">Private thread with ${esc(app.userName || 'this applicant')}. Messages sent here appear only on their dashboard — there is no friends list and no new-friend request.</p>
+                    <div class="msg-thread" id="msgThread" aria-live="polite">
+                        <div class="msg-empty">Loading conversation…</div>
+                    </div>
+                    <div class="msg-presets" id="msgPresets">
+                        <span class="preset-label">Auto choose this — standard staff messages</span>
+                        <button type="button" class="msg-preset" data-preset="a"><b>Message A — Document correction</b><small>Action needed for your application</small></button>
+                        <button type="button" class="msg-preset" data-preset="b"><b>Message B — Review complete</b><small>Documents passed initial screening</small></button>
+                        <button type="button" class="msg-preset" data-preset="c"><b>Message C — Appointment confirmed</b><small>City Hall appointment details</small></button>
+                    </div>
+                    <form class="msg-composer" id="msgForm" autocomplete="off">
+                        <textarea id="msgInput" rows="2" maxlength="4000" placeholder="Reply to ${esc(app.userName || 'the applicant')}…" aria-label="Reply to the applicant"></textarea>
+                        <button type="submit" class="btn primary" id="msgSendBtn">Send reply</button>
+                    </form>
+
+                    ${app.reviewNotes ? '<h3>Admin Notes</h3><p style="color:var(--muted);white-space:pre-wrap;">' + app.reviewNotes + '</p>' : ''}
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
+
+        // --------------- ADMIN REPLY THREAD ---------------
+        // The applicant's private line to the office. Admin replies are stored
+        // with sender_role 'admin' and show up on that applicant's dashboard;
+        // applicants can never post here and there is no friends / friend
+        // request concept at all — just this one thread.
+        (function initMessages() {
+          const threadEl = modal.querySelector("#msgThread");
+          const formEl = modal.querySelector("#msgForm");
+          const inputEl = modal.querySelector("#msgInput");
+          const sendBtn = modal.querySelector("#msgSendBtn");
+          const presetsEl = modal.querySelector("#msgPresets");
+          if (!threadEl || !formEl || !app.user_id) return;
+
+          // The three standard staff messages. Picking one fills the reply box
+          // so the admin can still read it over before pressing Send.
+          const PRESETS = {
+            a: 'Subject: Action needed for your application\n' +
+               'Your application needs a correction before staff can finish reviewing it. Please sign in to Smart PWD NFC Verify to see which document needs attention. You can submit the correction online; please wait for further instructions before travelling to City Hall.',
+            b: 'Your submitted documents have passed the initial screening and have been reviewed by authorized staff. Your application is ready for the next verification step. Please follow the appointment instructions in your account. This is not yet an approval of your PWD application.',
+            c: 'Your City Hall appointment is confirmed. Please check your account for the date, time, official office location, reference number, and required original documents. If you cannot attend, reschedule before travelling.',
+          };
+
+          if (presetsEl) {
+            presetsEl.addEventListener("click", function (e) {
+              const btn = e.target.closest(".msg-preset");
+              if (!btn) return;
+              const text = PRESETS[btn.dataset.preset];
+              if (!text) return;
+              presetsEl.querySelectorAll(".msg-preset").forEach(function (b) {
+                b.classList.toggle("active", b === btn);
+              });
+              inputEl.value = text;
+              inputEl.focus();
+            });
+          }
+
+          // Hand-editing the reply means it is no longer the chosen template.
+          inputEl.addEventListener("input", function () {
+            if (presetsEl) {
+              presetsEl.querySelectorAll(".msg-preset.active").forEach(function (b) {
+                b.classList.remove("active");
+              });
+            }
+          });
+
+          function when(v) {
+            if (!v) return "";
+            const d = new Date(v);
+            return isNaN(d.getTime()) ? "" : d.toLocaleString();
+          }
+
+          function render(list) {
+            if (!list.length) {
+              threadEl.innerHTML = '<div class="msg-empty">No messages yet. The applicant has not written to the office.</div>';
+              return;
+            }
+            threadEl.innerHTML = list.map(function (m) {
+              const fromAdmin = m.senderRole === "admin";
+              return '<div class="msg ' + (fromAdmin ? "out" : "in") + '"><div>' +
+                '<div class="bubble">' + esc(m.body) + '</div>' +
+                '<div class="msg-meta">' + (fromAdmin ? "PWD Admin" : esc(app.userName || "Applicant")) +
+                  ' · ' + when(m.createdAt) + '</div>' +
+              '</div></div>';
+            }).join("");
+            threadEl.scrollTop = threadEl.scrollHeight;
+          }
+
+          async function load() {
+            try {
+              const res = await fetch('/api/messages?user_id=' + encodeURIComponent(app.user_id), {
+                headers: { 'Authorization': 'Bearer ' + token }
+              });
+              const json = await res.json().catch(function () { return null; });
+              if (!res.ok || !json || !json.ok) {
+                throw new Error((json && json.message) || 'Could not load the conversation.');
+              }
+              render(Array.isArray(json.messages) ? json.messages : []);
+            } catch (err) {
+              threadEl.innerHTML = '<div class="msg-empty">' + esc(err.message || 'Could not load the conversation.') + '</div>';
+            }
+          }
+
+          formEl.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const text = (inputEl.value || "").trim();
+            if (!text) return;
+            sendBtn.disabled = true;
+            sendBtn.textContent = "Sending…";
+            try {
+              const res = await fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ userId: app.user_id, body: text })
+              });
+              const json = await res.json().catch(function () { return null; });
+              if (!res.ok || !json || !json.ok) {
+                throw new Error((json && json.message) || 'Could not send the reply.');
+              }
+              inputEl.value = "";
+              await load();
+            } catch (err) {
+              renderStatusBanner(err.message || 'Could not send the reply.', 'error');
+            } finally {
+              sendBtn.disabled = false;
+              sendBtn.textContent = "Send reply";
+            }
+          });
+
+          load();
+        })();
+
+        // --------------- IN-PAGE DOCUMENT VIEWER ---------------
+        // Clicking "View full size" shows the document in an overlay on this
+        // same screen instead of opening a new browser tab, so the admin never
+        // loses their place in the review list.
+        function openViewer(src, label, isFile) {
+          const lb = document.createElement("div");
+          lb.className = "doc-lightbox";
+          lb.setAttribute("role", "dialog");
+          lb.setAttribute("aria-modal", "true");
+          lb.innerHTML =
+            '<button type="button" class="lb-close" aria-label="Close preview">&times;</button>' +
+            (isFile
+              ? '<iframe src="' + src + '" title="' + label + '"></iframe>'
+              : '<img src="' + src + '" alt="' + label + '">') +
+            '<div class="lb-caption">' + label + '</div>';
+          document.body.appendChild(lb);
+
+          function closeViewer() {
+            lb.remove();
+            document.removeEventListener("keydown", onKey);
+          }
+          function onKey(e) {
+            if (e.key === "Escape") { e.stopPropagation(); closeViewer(); }
+          }
+          lb.querySelector(".lb-close").onclick = closeViewer;
+          lb.onclick = function (e) { if (e.target === lb) closeViewer(); };
+          document.addEventListener("keydown", onKey);
+        }
+
+        modal.addEventListener("click", function (e) {
+          if (!e.target || e.target.nodeType !== 1) return;
+          const btn = e.target.closest(".doc-view");
+          if (!btn) return;
+          const label = btn.dataset.docLabel || "Document";
+          const thumb = btn.closest(".doc-thumb");
+          const img = thumb ? thumb.querySelector("img") : null;
+          if (img) return openViewer(img.src, label, false);
+          if (btn.dataset.docUrl) openViewer(btn.dataset.docUrl, label, true);
+        });
+
+        // --------------- ID CARD ENGINE ---------------
+        // The approved card design's own script: flip buttons, drag-to-rotate,
+        // photo / background / signature uploads and print.
+        (function initIdCard() {
+          const card = document.getElementById('card');
+          if (!card) return;
+          const stage = document.getElementById('cardStage');
+          const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          let flipped = false, dragging = false, startX = 0, startY = 0, startRotY = 0, startRotX = 0, rotY = 0, rotX = 0;
+          function renderCard() {
+            card.classList.remove('flipped');
+            card.style.transform = `rotateX(${rotX}deg) rotateY(${rotY + (flipped ? 180 : 0)}deg)`;
+            card.style.transition = dragging || reducedMotion() ? 'none' : 'transform .85s cubic-bezier(.2,.75,.25,1)';
+            card.setAttribute('aria-label', `3D sample ID card, ${flipped ? 'back' : 'front'} side facing. Drag or touch to rotate. Press Enter or Space to flip.`);
+          }
+          function showBack(value) { flipped = value; rotY = 0; rotX = 0; renderCard(); }
+          document.getElementById('flipBtn').addEventListener('click', () => showBack(!flipped));
+          document.getElementById('frontBtn').addEventListener('click', () => showBack(false));
+          document.getElementById('backBtn').addEventListener('click', () => showBack(true));
+          document.getElementById('printBtn').addEventListener('click', () => window.print());
+          card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showBack(!flipped); } });
+          // Drag with mouse or touch to rotate the 3D card.
+          card.addEventListener('pointerdown', e => { dragging = true; stage.classList.add('dragging'); startX = e.clientX; startY = e.clientY; startRotY = rotY; startRotX = rotX; card.setPointerCapture(e.pointerId); card.style.transition = 'none'; });
+          card.addEventListener('pointermove', e => { if (!dragging) return; rotY = startRotY + (e.clientX - startX) * 0.65; rotX = Math.max(-22, Math.min(22, startRotX - (e.clientY - startY) * 0.35)); renderCard(); });
+          function finishDrag() { if (!dragging) return; dragging = false; stage.classList.remove('dragging'); if (Math.abs(rotY) > 90) flipped = !flipped; rotY = 0; rotX = 0; renderCard(); }
+          card.addEventListener('pointerup', finishDrag);
+          card.addEventListener('pointercancel', finishDrag);
+          const input = document.getElementById('photoInput');
+          document.getElementById('uploadBtn').addEventListener('click', () => input.click());
+          function readImage(file, callback) { if (!file || !file.type.startsWith('image/')) return; const reader = new FileReader(); reader.onload = () => callback(reader.result); reader.readAsDataURL(file); }
+          function bindBackground(buttonId, inputId, face) {
+            const btn = document.getElementById(buttonId), fileInput = document.getElementById(inputId);
+            btn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', () => {
+              const file = fileInput.files && fileInput.files[0];
+              readImage(file, data => {
+                face.style.backgroundImage = `url("${data}")`;
+                face.style.backgroundSize = '100% 100%';
+                face.style.backgroundPosition = 'center';
+                face.style.backgroundRepeat = 'no-repeat';
+              });
+            });
+          }
+          const frontFace = modal.querySelector('.front'), backFace = modal.querySelector('.back');
+          bindBackground('bgBackBtn', 'bgBackInput', backFace);
+          document.getElementById('clearBgBackBtn').addEventListener('click', () => { backFace.style.backgroundImage = ''; document.getElementById('bgBackInput').value = ''; });
+
+          // The front background is picked from one tile per Metro Manila LGU,
+          // each backed by a file in /backgrounds/ named after the city. A tile
+          // whose file is missing stays visible but is not selectable.
+          const PLACES = [
+            ['Caloocan', 'caloocan'],
+            ['Las Piñas', 'las-pinas'],
+            ['Makati', 'makati'],
+            ['Malabon', 'malabon'],
+            ['Mandaluyong', 'mandaluyong'],
+            ['Manila (Regional Center)', 'manila'],
+            ['Marikina', 'marikina'],
+            ['Muntinlupa', 'muntinlupa'],
+            ['Navotas', 'navotas'],
+            ['Parañaque', 'paranaque'],
+            ['Pasay', 'pasay'],
+            ['Pasig', 'pasig'],
+            ['Quezon City', 'quezon-city'],
+            ['San Juan', 'san-juan'],
+            ['Taguig', 'taguig'],
+            ['Valenzuela', 'valenzuela'],
+          ];
+          const bgGrid = document.getElementById('bgGrid');
+          // The saved background lives on the application row as an LGU slug,
+          // so the cardholder's own dashboard renders the identical card.
+          let savedBgFront = String(app.bgFront || '').toLowerCase();
+          const bgSaveNote = document.getElementById('bgSaveNote');
+          function applyFrontBackground(src) {
+            frontFace.style.backgroundImage = src ? `url("${src}")` : '';
+            frontFace.style.backgroundSize = '100% 100%';
+            frontFace.style.backgroundPosition = 'center';
+            frontFace.style.backgroundRepeat = 'no-repeat';
+          }
+          function signalBackground(message, isError) {
+            if (!bgSaveNote) return;
+            bgSaveNote.textContent = message || '';
+            bgSaveNote.className = 'bgsavenote' + (isError ? ' error' : '');
+            bgSaveNote.hidden = !message;
+          }
+          // Persist the pick immediately — waiting for Approve would lose the
+          // choice if the admin closed the modal, and a background-only save
+          // leaves the application's status untouched.
+          async function saveFrontBackground(slug) {
+            if (!appId) return;
+            signalBackground('Saving background…', false);
+            try {
+              const res = await fetch('/api/applications/' + encodeURIComponent(appId), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ bgFront: slug }),
+              });
+              const json = await res.json().catch(() => null);
+              if (!res.ok || !json || !json.ok) {
+                throw new Error((json && json.message) ? json.message : 'Save failed.');
+              }
+              savedBgFront = slug;
+              app.bgFront = slug;
+              signalBackground('Saved — this background now appears on the cardholder\'s dashboard once the application is approved.', false);
+            } catch (err) {
+              signalBackground('Could not save the background: ' + ((err && err.message) || 'please try again.'), true);
+            }
+          }
+          PLACES.forEach(([name, slug]) => {
+            const src = 'backgrounds/' + slug + '.png';
+            const swatch = document.createElement('button');
+            swatch.type = 'button';
+            swatch.className = 'bgswatch';
+            swatch.dataset.slug = slug;
+            swatch.title = 'Use the ' + name + ' background';
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = name + ' background';
+            img.onerror = () => {
+              const gap = document.createElement('div');
+              gap.className = 'bgmissing';
+              gap.textContent = 'no image';
+              img.replaceWith(gap);
+              swatch.dataset.empty = '1';
+            };
+            const caption = document.createElement('b');
+            caption.textContent = name;
+            swatch.append(img, caption);
+            swatch.addEventListener('click', () => {
+              if (swatch.dataset.empty === '1') return;
+              bgGrid.querySelectorAll('.bgswatch.active').forEach(s => s.classList.remove('active'));
+              swatch.classList.add('active');
+              applyFrontBackground(src);
+              saveFrontBackground(slug);
+            });
+            bgGrid.appendChild(swatch);
+          });
+          // Reopen the card the way it was last saved.
+          if (savedBgFront) {
+            const savedTile = bgGrid.querySelector('.bgswatch[data-slug="' + savedBgFront + '"]');
+            if (savedTile) {
+              savedTile.classList.add('active');
+              applyFrontBackground('backgrounds/' + savedBgFront + '.png');
+            }
+          }
+          document.getElementById('bgFrontBtn').addEventListener('click', () => { bgGrid.hidden = !bgGrid.hidden; });
+          document.getElementById('clearBgFrontBtn').addEventListener('click', () => {
+            applyFrontBackground('');
+            bgGrid.querySelectorAll('.bgswatch.active').forEach(s => s.classList.remove('active'));
+            saveFrontBackground('');
+          });
+          input.addEventListener('change', () => {
+            const file = input.files && input.files[0];
+            readImage(file, data => {
+              const img = document.createElement('img');
+              img.alt = 'Uploaded sample photo';
+              img.src = data;
+              document.getElementById('photoBox').replaceChildren(img);
+            });
+          });
+          renderCard();
+          const sigInput = document.getElementById('sigInput');
+          document.getElementById('sigBtn').addEventListener('click', () => sigInput.click());
+          sigInput.addEventListener('change', () => {
+            const file = sigInput.files && sigInput.files[0];
+            readImage(file, data => {
+              const img = document.getElementById('sigImg');
+              img.src = data;
+              img.hidden = false;
+              const placeholder = document.getElementById('sigPlaceholder');
+              if (placeholder) placeholder.hidden = true;
+            });
+          });
+
+          // "Reader NFC Scan" — the approved holder's card can now be linked to
+          // the USB reader. Clicking arms the reader through the local kiosk, so
+          // the next tapped card stores its UID on profiles.nfc_id; that is what
+          // the reader checks on every later tap. The applicant's profile id is
+          // the application's user_id.
+          const nfcBtn = document.getElementById('readerNfcBtn');
+          if (nfcBtn) {
+            const nfcCancel = document.getElementById('readerNfcCancelBtn');
+            const nfcNote = document.getElementById('nfcNote');
+            let nfcTimer = null;
+            let nfcArmedSeq = null;
+            const nfcSignal = (message, tone) => {
+              nfcNote.textContent = message || '';
+              nfcNote.className = 'nfc-note' + (tone ? ' ' + tone : '');
+              nfcNote.hidden = !message;
+            };
+            const nfcIdle = () => {
+              if (nfcTimer) { clearInterval(nfcTimer); nfcTimer = null; }
+              nfcArmedSeq = null;
+              nfcBtn.disabled = false;
+              nfcBtn.textContent = 'Reader NFC Scan';
+              nfcCancel.hidden = true;
+            };
+            const nfcState = async () => {
+              const res = await fetch('/api/nfc/state');
+              const json = await res.json().catch(() => null);
+              if (!res.ok || !json || !json.ok) {
+                throw new Error((json && json.message) || 'Could not reach the NFC reader service.');
+              }
+              return json;
+            };
+            const nfcPoll = async () => {
+              let st;
+              try {
+                st = await nfcState();
+              } catch (err) {
+                nfcIdle();
+                nfcSignal((err && err.message) || 'Lost contact with the NFC reader.', 'error');
+                return;
+              }
+              if (st.enrolling) return;
+              // A tap that happened before the reader was armed must not be
+              // reported as this card.
+              const tap = (st.last && (nfcArmedSeq === null || st.last.seq > nfcArmedSeq)) ? st.last : null;
+              nfcIdle();
+              if (tap && tap.status === 'enrolled') {
+                nfcSignal('Card linked to ' + (tap.name || app.userName || 'this holder') + '. The reader now verifies it as a valid PWD ID.');
+              } else if (tap && tap.error) {
+                nfcSignal(tap.error, 'error');
+              } else {
+                nfcSignal('No card was linked. Press the button again and tap the new card.', 'error');
+              }
+            };
+            nfcBtn.addEventListener('click', async () => {
+              nfcBtn.disabled = true;
+              nfcBtn.textContent = 'Arming reader…';
+              nfcSignal('', '');
+              try {
+                const res = await fetch('/api/nfc/enroll', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId: app.user_id }),
+                });
+                const json = await res.json().catch(() => null);
+                if (!res.ok || !json || !json.ok) {
+                  throw new Error((json && json.message) || 'Could not arm the NFC reader.');
+                }
+                let armed = null;
+                try { armed = await nfcState(); } catch (_) {}
+                nfcArmedSeq = (armed && armed.last && armed.last.seq) || 0;
+                nfcBtn.textContent = 'Waiting for tap…';
+                nfcCancel.hidden = false;
+                if (armed && armed.serial && armed.serial.connected === false) {
+                  nfcSignal('The reader is not connected (' + (armed.serial.message || 'no ESP32 on USB') + '). Plug it in, then tap the card.', 'error');
+                } else {
+                  nfcSignal('Reader armed for ' + (json.name || app.userName || 'this holder') + '. Tap the new card on the reader now.', 'busy');
+                }
+                nfcTimer = setInterval(nfcPoll, 1500);
+              } catch (err) {
+                nfcIdle();
+                nfcSignal((err && err.message) || 'Could not arm the NFC reader.', 'error');
+              }
+            });
+            nfcCancel.addEventListener('click', async () => {
+              nfcIdle();
+              nfcSignal('Scan cancelled. No card was linked.', '');
+              try { await fetch('/api/nfc/enroll/cancel', { method: 'POST' }); } catch (_) {}
+            });
+          }
+        })();
+
+        const close = () => { modal.remove(); backdrop.remove(); };
+        document.getElementById("detailClose").onclick = close;
+        backdrop.onclick = close;
+        document.addEventListener("keydown", function esc(e) {
+            if (e.key === "Escape") {
+              // Let the document viewer swallow Escape while it is open.
+              if (document.querySelector(".doc-lightbox")) return;
+              close(); document.removeEventListener("keydown", esc);
+            }
+        });
+      }
+
+      function setButtonsLoading(action, loading, appId) {
+        const btns = appListContainer.querySelectorAll(`button[data-action][data-id="${appId}"]`);
+        btns.forEach(function (b) {
+          const actionBtn = b.dataset.action === action;
+          b.disabled = loading;
+          if (actionBtn) {
+            b.dataset.originalHtml = b.dataset.originalHtml || (window.SmartPWDLanguage
+              ? window.SmartPWDLanguage.sourceText(b)
+              : b.innerHTML);
+            if (loading) {
+              b.innerHTML = (action === 'approve' ? 'Approving…' : action === 'reject' ? 'Rejecting…' : '…');
+              b.setAttribute('aria-busy', 'true');
+            } else {
+              b.innerHTML = b.dataset.originalHtml;
+              b.removeAttribute('aria-busy');
+            }
+          }
+        });
+      }
+
+      async function renderApplications(token) {
+        appListContainer.innerHTML = '';
+        // "All" means no status filter at all — the API treats a missing
+        // status param as "return everything".
+        const query = activeStatus === 'All' ? '' : ('?status=' + encodeURIComponent(activeStatus));
+        const response = await fetch('/api/applications' + query, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            appListContainer.innerHTML = '<p class="error">Could not load applications. You may need to log in again.</p>';
+            return;
+        }
+        const payload = await response.json();
+        const applications = (payload && Array.isArray(payload.applications))
+          ? payload.applications
+          : (Array.isArray(payload) ? payload : []);
+
+        if (applications.length === 0) {
+          appListContainer.innerHTML = '<p>' + (activeStatus === 'All'
+            ? 'No applications found.'
+            : 'No ' + activeStatus.toLowerCase() + ' applications to review.') + '</p>';
+          return;
+        }
+
+        applications.forEach(app => {
+          const appElement = document.createElement('div');
+          appElement.className = 'application-item';
+          const status = app.status || 'Pending';
+          const statusClass = status.toLowerCase().replace(/[^a-z]/g, '');
+          // Approve/Reject only make sense while an application is still in the
+          // queue — decided applications are view-only.
+          const reviewActions = status === 'Pending'
+            ? '<button class="btn light small-btn" data-action="reject" data-id="' + app.id + '">Reject</button>' +
+              '<button class="btn primary small-btn" data-action="approve" data-id="' + app.id + '">Approve</button>'
+            : '';
+          appElement.innerHTML = `
+            <div class="app-item-info">
+              <strong>${app.userName || 'Unnamed applicant'} (${app.userEmail || 'no email'})</strong>
+              <span class="app-status ${statusClass}">${status}</span>
+              <small>Submitted: ${app.submittedAt ? new Date(app.submittedAt).toLocaleString() : 'Unknown'}</small>
+              ${app.idNumber ? '<small>ID: ' + app.idNumber + '</small>' : ''}
+            </div>
+            <div class="app-item-actions">
+              <button class="btn light small-btn" data-action="view" data-id="${app.id}">View</button>
+              ${reviewActions}
+            </div>
+          `;
+          appListContainer.appendChild(appElement);
+        });
+      }
+
+      async function initializePage() {
+        const user = await SmartPWDAuth.requireAuth(["admin"]);
+        if (!user) return;
+
+        const signOutLink = document.querySelector(".sign-out");
+        if (signOutLink) {
+          signOutLink.addEventListener("click", async function (e) {
+            e.preventDefault();
+            try { await SmartPWDAuth.logoutUser(); } catch (_) {}
+            window.location.href = "login.html";
+          });
+        }
+
+        const profileName = document.querySelector(".sidebar .profile b");
+        if (profileName) profileName.textContent = (user.firstName || "") + " " + (user.lastName || "");
+
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = (sessionData && sessionData.session && sessionData.session.access_token) || "";
+
+        appListContainer.addEventListener('click', async function(e) {
+            const button = e.target.closest('button[data-action]');
+            if (!button) return;
+            const action = button.dataset.action;
+            const appId = button.dataset.id;
+            if (action === 'approve' || action === 'reject') {
+                const newStatus = action === 'approve' ? 'Approved' : 'Rejected';
+                setButtonsLoading(action, true, appId);
+                renderStatusBanner('', '');
+                try {
+                    const res = await fetch(`/api/applications/${appId}`, {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                      },
+                      body: JSON.stringify({
+                        status: newStatus,
+                        // pwd_applications.reviewed_by is a uuid column, so send
+                        // the signed-in admin's real id — not a role name.
+                        reviewedBy: user.uid
+                      })
+                    });
+                    let json = null;
+                    try { json = await res.json(); } catch (_) {}
+                    if (!res.ok || !json || !json.ok) {
+                      const msg = (json && json.message) ? json.message : ('Failed to ' + (action === 'approve' ? 'approve' : 'reject') + ' application.');
+                      renderStatusBanner(msg, 'error');
+                      return;
+                    }
+                    const name = (json.application && json.application.userName) ? json.application.userName : '';
+                    pushEstablishmentsFlash({
+                      tone: newStatus === 'Approved' ? 'success' : 'error',
+                      title: newStatus === 'Approved' ? 'Application Approved' : 'Application Rejected',
+                      message: (name ? name + ' was ' : 'The application was ') + newStatus.toLowerCase() + ' in ID Applications.',
+                      at: new Date().toISOString(),
+                    });
+                    renderStatusBanner(
+                      newStatus === 'Approved'
+                        ? ('Application approved' + (name ? ' for ' + name : '') + '. User dashboard now shows Verified badge.')
+                        : ('Application rejected' + (name ? ' for ' + name : '') + '.'),
+                      'success'
+                    );
+                    renderApplications(token);
+                } catch (err) {
+                    renderStatusBanner('Network error: ' + (err.message || 'Please try again.'), 'error');
+                } finally {
+                    setButtonsLoading(action, false, appId);
+                }
+            } else if (action === 'view') {
+                openApplicationDetail(appId, token);
+            }
+        });
+        if (appFilter) {
+          appFilter.addEventListener('click', function (e) {
+            const chip = e.target.closest('button[data-status]');
+            if (!chip) return;
+            activeStatus = chip.dataset.status;
+            appFilter.querySelectorAll('button[data-status]').forEach(function (b) {
+              const on = b === chip;
+              b.classList.toggle('selected', on);
+              b.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            renderStatusBanner('', '');
+            renderApplications(token);
+          });
+        }
+
+        renderApplications(token);
+      }
+
+      initializePage();
+    });
+  </script>
+
+  <!-- Global JavaScript -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

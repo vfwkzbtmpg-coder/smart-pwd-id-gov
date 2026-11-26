@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Benefits | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="top">
+
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span>
+        <strong>Smart PWD ID</strong>
+        <small>Cardholder Portal</small>
+      </span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a
+        class="active"
+        href="dashboard.html"
+        aria-current="page"
+      >Dashboard</a>
+      <a href="verify.html">Verify</a>
+      <a href="index.html">Home</a>
+    </nav>
+
+    <button
+      type="button"
+      class="access settings-trigger"
+      data-access
+      aria-label="Open Settings"
+    >
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+
+  </header>
+
+  <!-- NOTIFICATION TOAST ANCHOR -->
+  <div
+    id="toast-root"
+    class="toast-root"
+    aria-live="polite"
+    aria-atomic="true"
+    role="region"
+    aria-label="Notifications"
+  ></div>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="profile" >
+        <div class="photo" aria-hidden="true"><img class="profile-photo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=professional%20ID%20photo%20portrait%20of%20a%20smiling%20young%20filipino%20woman%20with%20dark%20hair%20wearing%20black%20blazer%20white%20collar%20shirt%20neutral%20gray%20background%20formal%20government%20ID%20style%20passport%20photo&image_size=square_hd" alt="User profile photo"></div>
+        <b></b>
+        <small>PWD Cardholder</small>
+      </div>
+
+      <nav
+        class="sidebar-nav"
+        aria-label="Cardholder navigation"
+      >
+        <a
+          href="dashboard.html"
+        >
+          <span aria-hidden="true">▦</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="my-pwd-id.html">
+          <span aria-hidden="true">▣</span>
+          <span>My Smart PWD ID</span>
+        </a>
+        <a href="benefits.html" class="selected" aria-current="page">
+          <span aria-hidden="true">⌁</span>
+          <span>Benefits</span>
+        </a>
+        <a href="transactions.html">
+          <span aria-hidden="true">◷</span>
+          <span>Transactions</span>
+        </a>
+        <button
+          type="button"
+          class="sidebar-button"
+          data-access
+          aria-label="Open Settings"
+        >
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+        <a
+          class="sign-out"
+          href="index.html"
+        >
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <section class="dash">
+
+      <div class="dashhead">
+        <div>
+          <span class="eyebrow">ELIGIBILITY</span>
+          <h1>My Benefits</h1>
+          <p>Information on benefits and discounts as a PWD cardholder.</p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <span
+              class="benefit-icon"
+              aria-hidden="true"
+            >💊</span>
+            <div>
+              <b>Pharmacy</b>
+              <small>Applicable benefit verification for medicines.</small>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <span
+              class="benefit-icon"
+              aria-hidden="true"
+            >🍽️</span>
+            <div>
+              <b>Restaurant & Groceries</b>
+              <small>Applicable benefit verification for basic necessities and prime commodities.</small>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <span
+              class="benefit-icon"
+              aria-hidden="true"
+            >🚌</span>
+            <div>
+              <b>Transportation</b>
+              <small>Eligibility check for land, air, and sea travel.</small>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top: 20px; font-size: 12px;"><strong>Note:</strong> This is a placeholder page. The full implementation would provide detailed information on each benefit according to current Philippine law and regulations.</p>
+      </section>
+
+    </section>
+
+  </main>
+
+  <!-- Global JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+      var SUPABASE_ANON_KEY =
+        'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+      }
+    })();
+  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function () {
+      let toastTimer = null;
+      function dismissToast() {
+        const r = document.getElementById("toast-root");
+        if (!r) return;
+        r.innerHTML = "";
+        if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+      }
+      function showToast(props) {
+        const root = document.getElementById("toast-root");
+        if (!root) return;
+        dismissToast();
+        const title = props.title || "Notice";
+        const message = props.message || "";
+        const tone = (props.tone === "success" || props.tone === "error" || props.tone === "warning") ? props.tone : "info";
+        const actions = Array.isArray(props.actions) ? props.actions : [];
+        const auto = typeof props.autoDismissMs === "number" ? props.autoDismissMs : 0;
+        const icon = tone === "success" ? "✅" : tone === "error" || tone === "warning" ? "⚠" : "ⓘ";
+        const toast = document.createElement("div");
+        toast.className = "toast toast--" + tone;
+        toast.setAttribute("role", tone === "error" || tone === "warning" ? "alert" : "status");
+        const actionHtml = actions.map(function (a, i) {
+          const cls = a.primary ? "toast-action toast-action--primary" : "toast-action";
+          if (a.href) {
+            return '<a class="' + cls + '" href="' + String(a.href).replace(/"/g,"&quot;") + '" data-act="' + i + '">' + String(a.label || "Go") + "</a>";
+          }
+          return '<button type="button" class="' + cls + '" data-act="' + i + '">' + String(a.label || "OK") + '</button>';
+        }).join("");
+        toast.innerHTML =
+          '<div class="toast-icon" aria-hidden="true">' + icon + '</div>' +
+          '<div class="toast-body">' +
+            '<strong class="toast-title"></strong>' +
+            '<p class="toast-message"></p>' +
+            (actionHtml ? '<div class="toast-actions">' + actionHtml + '</div>' : '') +
+          '</div>' +
+          '<button type="button" class="toast-close" aria-label="Dismiss notification">×</button>';
+        toast.querySelector(".toast-title").textContent = title;
+        toast.querySelector(".toast-message").textContent = message;
+        toast.querySelectorAll("[data-act]").forEach(function (btn) {
+          const a = actions[Number(btn.getAttribute("data-act"))];
+          if (!a) return;
+          btn.addEventListener("click", function (e) {
+            if (typeof a.onClick === "function") { try { a.onClick(e, { dismiss: dismissToast }); } catch (_) {} }
+            if (a.autoDismiss !== false) dismissToast();
+          });
+        });
+        const close = toast.querySelector(".toast-close");
+        if (close) close.addEventListener("click", dismissToast);
+        root.appendChild(toast);
+        requestAnimationFrame(function () { toast.classList.add("toast--in"); });
+        if (auto > 0) toastTimer = setTimeout(dismissToast, auto);
+      }
+      function statusNeedsApp(status) {
+        const s = String(status || "Not Submitted").trim().toLowerCase();
+        return s !== "approved" && s !== "pending";
+      }
+      function renderApplicationBanner(pageTitle, u) {
+        const status = (u && u.application && u.application.status) || "Not Submitted";
+        if (!statusNeedsApp(status)) return false;
+        const message =
+          status === "Rejected"
+            ? "Your PWD application was not approved. Please reapply to view " + pageTitle + "."
+            : "Submit your PWD application first to unlock the " + pageTitle + " page and its verifications.";
+        const ctaLabel = status === "Rejected" ? "Apply Again" : "Submit Application";
+        const dash = document.querySelector("section.dash");
+        if (dash && !dash.querySelector(".app-required-banner")) {
+          const b = document.createElement("div");
+          b.className = "app-required-banner";
+          b.style.cssText =
+            "background:linear-gradient(135deg,rgba(255,166,0,0.14),rgba(255,193,7,0.08));" +
+            "border:1px solid rgba(255,140,0,0.35);border-radius:22px;padding:18px 20px;margin:0 0 22px 0;" +
+            "display:flex;align-items:flex-start;gap:14px;box-shadow:0 14px 30px rgba(255,166,0,0.1);";
+          b.innerHTML =
+            '<div style="width:46px;height:46px;min-width:46px;border-radius:14px;' +
+            'display:grid;place-items:center;background:rgba(255,166,0,0.2);color:#b86800;font-size:22px;">⚠</div>' +
+            '<div style="min-width:0;flex:1;">' +
+              '<strong style="display:block;font-size:16px;color:#5a3a00;margin-bottom:6px;">' + ctaLabel + ' to unlock ' + pageTitle + '</strong>' +
+              '<p style="margin:0 0 14px 0;color:#6b5318;font-size:14px;line-height:1.5;">' + message +
+              ' Once approved, the 20% pharmacy, restaurant and transportation discounts become available for verification.</p>' +
+              '<div style="display:flex;flex-wrap:wrap;gap:10px;">' +
+                '<a href="application-form.html" class="btn primary">' + ctaLabel + '</a>' +
+                '<a href="dashboard.html" class="btn light">Back to Dashboard</a>' +
+              '</div>' +
+            '</div>';
+          dash.insertBefore(b, dash.firstChild);
+        }
+        return true;
+      }
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        const profilePhoto = document.querySelector('.sidebar .profile .profile-photo');
+        const signOut = document.querySelector(".sign-out");
+        if (signOut) signOut.addEventListener("click", async (e) => {
+          e.preventDefault();
+          if (window.SmartPWDAuth) await SmartPWDAuth.logoutUser();
+          window.location.href = "login.html";
+        });
+        if (!window.SmartPWDAuth) { setTimeout(() => window.location.reload(), 300); return; }
+        const user = await SmartPWDAuth.requireAuth(["pwd", "admin"]);
+        if (!user) return;
+        const fullName = ((user.firstName || "") + " " + (user.lastName || "")).trim();
+        const nb = document.querySelector(".sidebar .profile b");
+        if (nb) nb.textContent = fullName || "Unnamed user";
+        try {
+          const sb = window.supabase;
+          if (sb && user.uid && profilePhoto) {
+            const photoResult = await sb
+              .from('pwd_applications')
+              .select('photo_url')
+              .eq('user_id', user.uid)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            const appPhoto = photoResult && photoResult.data && photoResult.data.photo_url;
+            if (appPhoto) {
+              profilePhoto.src = appPhoto;
+              profilePhoto.alt = (fullName || 'User') + ' 2x2 photo';
+            }
+          }
+        } catch (_) { /* keep the placeholder photo */ }
+        const currentPage = window.location.pathname.split("/").pop() || "benefits.html";
+        document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
+          const p = link.getAttribute("href");
+          link.classList.toggle("selected", p === currentPage);
+        });
+        const needs = renderApplicationBanner("Benefits", user);
+        if (needs) {
+          setTimeout(function () {
+            showToast({
+              tone: "warning",
+              title: "Submit your PWD application first",
+              message: "Benefit verifications (Pharmacy, Restaurant, Transportation) are available once your PWD application is approved.",
+              autoDismissMs: 12000,
+              actions: [
+                { label: "Submit Application", primary: true, href: "application-form.html" },
+                { label: "Go to Dashboard", href: "dashboard.html" },
+                { label: "Dismiss", onClick: function (_e, ctx) { ctx.dismiss(); }, autoDismiss: true }
+              ]
+            });
+          }, 450);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

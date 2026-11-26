@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Smart PWD ID Public API Documentation - Integration guide for third-party developers">
+  <title>Smart PWD ID | API Documentation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .api-docs {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .api-header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 40px;
+      background: linear-gradient(135deg, #071a33, #1769df);
+      border-radius: 20px;
+      color: #fff;
+    }
+    .api-header h1 {
+      color: #fff;
+      margin: 0 0 10px;
+    }
+    .api-header p {
+      color: #d6e4f8;
+      margin: 0;
+    }
+    .api-version {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+    .api-section {
+      margin-bottom: 40px;
+    }
+    .api-section h2 {
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .endpoint {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .method {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .method.get { background: #e5f7ef; color: #08784a; }
+    .method.post { background: #eef4ff; color: #1769df; }
+    .endpoint-path {
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .endpoint-desc {
+      color: var(--muted);
+      margin-bottom: 15px;
+    }
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    .params-table th, .params-table td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .params-table th {
+      background: #f9fafc;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .params-table code {
+      background: #f5f8fc;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .required {
+      color: #e53e3e;
+      font-weight: 700;
+    }
+    .optional {
+      color: var(--muted);
+    }
+    .code-block {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+    .code-block .comment { color: #6a9955; }
+    .code-block .string { color: #ce9178; }
+    .code-block .keyword { color: #569cd6; }
+    .auth-notice {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin: 20px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .auth-notice-icon {
+      font-size: 24px;
+    }
+    .response-example {
+      background: #f9fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+    .response-example h4 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-badge.success { background: #e5f7ef; color: #08784a; }
+    .status-badge.error { background: #fdebeb; color: #e53e3e; }
+    .status-badge.warning { background: #fff3cd; color: #856404; }
+    .try-it {
+      background: #eef4ff;
+      border: 1px solid #b3d4ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .try-it h4 {
+      margin: 0 0 15px;
+      color: #1769df;
+    }
+    .try-it input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-family: monospace;
+    }
+    .try-it button {
+      padding: 10px 20px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .try-it button:hover {
+      background: #0f58bf;
+    }
+    #try-result {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      display: none;
+    }
+    .footer-api {
+      text-align: center;
+      margin-top: 60px;
+      padding: 30px;
+      background: #f9fafc;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header class="floating-nav">
+    <nav class="pill-nav">
+      <a class="nav-logo" href="index.html">
+        <img src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a class="active" href="api-docs.html">API Docs</a>
+        <div class="nav-auth-slot" id="navAuthSlot" aria-live="polite"></div>
+      </div>
+      <button class="nav-setting settings-trigger" data-access aria-label="Setting">
+        <img src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=simple%20solid%20black%20gear%20cog%20icon%20white%20background%20flat%20vector&image_size=square_hd" alt="Setting">
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="api-docs">
+      <div class="api-header reveal">
+        <h1>Smart PWD ID Public API</h1>
+        <p>Integrate PWD ID verification into your applications</p>
+        <span class="api-version">Version 1.0.0</span>
+      </div>
+
+      <div class="auth-notice reveal">
+        <span class="auth-notice-icon">🔑</span>
+        <div>
+          <strong>Authentication Required</strong>
+          <p>All API endpoints require an API key in the <code>X-API-Key</code> header. Contact your administrator to obtain an API key.</p>
+        </div>
+      </div>
+
+      <!-- Health Check -->
+      <section class="api-section reveal">
+        <h2>Health Check</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/api/public/health</span>
+          </div>
+          <p class="endpoint-desc">Check API health status. No authentication required.</p>
+          
+          <div class="response-example">
+            <h4>Response <span class="status-badge success">200 OK</span></h4>
+            <div class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"healthy"</span>,
+  <span class="string">"service"</span>: <span class="string">"Smart PWD ID Public API"</span>,
+  <span class="string">"version"</span>: <span class="string">"1.0.0"</span>,
+  <span class="string">"timestamp"</span>: <span class="string">"2024-01-15T10:30:00.000Z"</span>,
+  <span class="string">"documentation"</span>: <span class="string">"/api-docs"</span>
+}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Verify PWD ID -->
+      <section class="api-section reveal">
+        <h2>Verify PWD ID</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/api/public/verify/:pwdId</span>
+          </div>
+          <p class="endpoint-desc">Verify a single PWD ID. Use for QR code or NFC tap verification.</p>
+          
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>pwdId</code></td>
+                <td>string</td>
+                <td><span class="required">Required</span></td>
+                <td>The PWD ID to verify (e.g., "pwd-1")</td>
+              </tr>
+              <tr>
+                <td><code>method</code></td>
+                <td>string</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Verification method: "QR", "NFC", or "manual"</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="response-example">
+            <h4>Success Response <span class="status-badge success">200 OK</span></h4>
+            <div class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"verified"</span>,
+  <span class="string">"message"</span>: <span class="string">"PWD ID is valid"</span>,
+  <span class="string">"data"</span>: {
+    <span class="string">"id"</span>: <span class="string">"pwd-1"</span>,
+    <span class="string">"firstName"</span>: <span class="string">"Ken Mijay"</span>,
+    <span class="string">"lastName"</span>: <span class="string">"Espiritu"</span>,
+    <span class="string">"validUntil"</span>: <span class="string">"Aug 12, 2031"</span>
+  },
+  <span class="string">"verifiedAt"</span>: <span class="string">"2024-01-15T10:30:00.000Z"</span>,
+  <span class="string">"verificationMethod"</span>: <span class="string">"QR"</span>
+}</div>
+          </div>
+
+          <div class="response-example">
+            <h4>Error Response <span class="status-badge error">404 Not Found</span></h4>
+            <div class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"not_found"</span>,
+  <span class="string">"message"</span>: <span class="string">"PWD ID not found or invalid"</span>,
+  <span class="string">"verifiedAt"</span>: <span class="string">"2024-01-15T10:30:00.000Z"</span>
+}</div>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method post">POST</span>
+            <span class="endpoint-path">/api/public/verify</span>
+          </div>
+          <p class="endpoint-desc">Batch verify multiple PWD IDs (max 100 per request).</p>
+          
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>pwdIds</code></td>
+                <td>array</td>
+                <td><span class="required">Required</span></td>
+                <td>Array of PWD IDs to verify</td>
+              </tr>
+              <tr>
+                <td><code>method</code></td>
+                <td>string</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Verification method</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="code-block"><span class="comment">// Example Request Body</span>
+{
+  <span class="string">"pwdIds"</span>: [<span class="string">"pwd-1"</span>, <span class="string">"pwd-2"</span>, <span class="string">"pwd-3"</span>],
+  <span class="string">"method"</span>: <span class="string">"QR"</span>
+}</div>
+        </div>
+      </section>
+
+      <!-- Check Status -->
+      <section class="api-section reveal">
+        <h2>Check PWD ID Status</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/api/public/status/:pwdId</span>
+          </div>
+          <p class="endpoint-desc">Check the status of a PWD ID (active, expired, suspended, flagged).</p>
+          
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>pwdId</code></td>
+                <td>string</td>
+                <td><span class="required">Required</span></td>
+                <td>The PWD ID to check</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="response-example">
+            <h4>Response <span class="status-badge success">200 OK</span></h4>
+            <div class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"success"</span>,
+  <span class="string">"data"</span>: {
+    <span class="string">"id"</span>: <span class="string">"pwd-1"</span>,
+    <span class="string">"status"</span>: <span class="string">"active"</span>,
+    <span class="string">"firstName"</span>: <span class="string">"Ken Mijay"</span>,
+    <span class="string">"lastName"</span>: <span class="string">"Espiritu"</span>,
+    <span class="string">"registeredAt"</span>: <span class="string">"2024-01-15T10:30:00.000Z"</span>,
+    <span class="string">"validUntil"</span>: <span class="string">"Aug 12, 2031"</span>,
+    <span class="string">"flags"</span>: []
+  },
+  <span class="string">"checkedAt"</span>: <span class="string">"2024-01-15T10:30:00.000Z"</span>
+}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Establishments -->
+      <section class="api-section reveal">
+        <h2>Establishments</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/api/public/establishments</span>
+          </div>
+          <p class="endpoint-desc">List all establishments that accept Smart PWD ID verification.</p>
+
+          <div class="response-example">
+            <h4>Response <span class="status-badge success">200 OK</span></h4>
+            <div class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"success"</span>,
+  <span class="string">"total"</span>: <span class="keyword">1</span>,
+  <span class="string">"data"</span>: [
+    {
+      <span class="string">"id"</span>: <span class="string">"est-1"</span>,
+      <span class="string">"name"</span>: <span class="string">"Sample Verifier"</span>,
+      <span class="string">"email"</span>: <span class="string">"verifier@smartpwd.ph"</span>
+    }
+  ]
+}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statistics -->
+      <section class="api-section reveal">
+        <h2>Public Statistics</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/api/public/stats</span>
+          </div>
+          <p class="endpoint-desc">Get public statistics about the Smart PWD ID system.</p>
+
+          <div class="response-example">
+            <h4>Response <span class="status-badge success">200 OK</span></h4>
+            <div class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"success"</span>,
+  <span class="string">"data"</span>: {
+    <span class="string">"totalPwds"</span>: <span class="keyword">1</span>,
+    <span class="string">"totalEstablishments"</span>: <span class="keyword">1</span>,
+    <span class="string">"totalVerifications"</span>: <span class="keyword">5</span>,
+    <span class="string">"successfulVerifications"</span>: <span class="keyword">3</span>,
+    <span class="string">"successRate"</span>: <span class="string">"60.00%"</span>
+  },
+  <span class="string">"lastUpdated"</span>: <span class="string">"2024-01-15T10:30:00.000Z"</span>
+}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Transactions -->
+      <section class="api-section reveal">
+        <h2>Recent Transactions</h2>
+        
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="method get">GET</span>
+            <span class="endpoint-path">/api/public/transactions/recent</span>
+          </div>
+          <p class="endpoint-desc">Get recent verification transactions.</p>
+          
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>limit</code></td>
+                <td>integer</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Number of transactions to return (default: 10, max: 100)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Rate Limits -->
+      <section class="api-section reveal">
+        <h2>Rate Limits</h2>
+        <p>API requests are rate-limited per API key. The default limit is <strong>100 requests per hour</strong>.</p>
+        
+        <div class="response-example">
+          <h4>Error Response <span class="status-badge warning">429 Too Many Requests</span></h4>
+          <div class="code-block">{
+  <span class="string">"error"</span>: <span class="string">"Rate limit exceeded"</span>,
+  <span class="string">"message"</span>: <span class="string">"You have exceeded the rate limit of 100 requests per hour"</span>,
+  <span class="string">"retryAfter"</span>: <span class="string">"1 hour"</span>
+}</div>
+        </div>
+      </section>
+
+      <!-- Try It -->
+      <section class="api-section reveal">
+        <h2>Try It Out</h2>
+        
+        <div class="try-it">
+          <h4>Test the API</h4>
+          <input type="text" id="api-key-input" placeholder="Enter your API key (e.g., spwd_public_demo_key_2024)">
+          <select id="endpoint-select" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:10px;">
+            <option value="health">GET /api/public/health</option>
+            <option value="verify">GET /api/public/verify/pwd-1</option>
+            <option value="status">GET /api/public/status/pwd-1</option>
+            <option value="establishments">GET /api/public/establishments</option>
+            <option value="stats">GET /api/public/stats</option>
+          </select>
+          <button onclick="tryApi()">Send Request</button>
+          <div id="try-result"></div>
+        </div>
+      </section>
+
+      <div class="footer-api reveal">
+        <p><strong>Need help?</strong> Contact your system administrator or check the API documentation.</p>
+        <p><a href="admin.html">Admin Panel</a> | <a href="index.html">Back to Home</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div>
+      <h4><img src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="" class="footer-logo"> Smart PWD ID</h4>
+      <p>Web and mobile digital verification platform.</p>
+    </div>
+    <div>
+      <h4>Platform</h4>
+      <a href="dashboard.html">PWD Portal</a>
+      <a href="verifier.html">Verifier Portal</a>
+      <a href="admin.html">Admin Portal</a>
+    </div>
+    <div>
+      <h4>API</h4>
+      <a href="api-docs.html">Documentation</a>
+      <a href="/api/public/health">Health Check</a>
+    </div>
+    <div>
+      <h4>© 2026</h4>
+      <p>Academic system prototype</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    async function tryApi() {
+      const apiKey = document.getElementById('api-key-input').value;
+      const endpoint = document.getElementById('endpoint-select').value;
+      const resultDiv = document.getElementById('try-result');
+      
+      if (!apiKey) {
+        resultDiv.style.display = 'block';
+        resultDiv.textContent = 'Please enter an API key';
+        return;
+      }
+
+      const urls = {
+        health: '/api/public/health',
+        verify: '/api/public/verify/pwd-1',
+        status: '/api/public/status/pwd-1',
+        establishments: '/api/public/establishments',
+        stats: '/api/public/stats'
+      };
+
+      try {
+        resultDiv.style.display = 'block';
+        resultDiv.textContent = 'Sending request...';
+
+        const response = await fetch(urls[endpoint], {
+          headers: {
+            'X-API-Key': apiKey
+          }
+        });
+
+        const data = await response.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultDiv.textContent = 'Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>

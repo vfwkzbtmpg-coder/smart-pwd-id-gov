@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create a Smart PWD ID account.">
+  <title>Register | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth">
+
+  <main class="auth-container">
+
+    <section class="authbox reveal" style="width: min(420px, 100%);">
+
+      <!-- Brand -->
+      <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+        <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+        <span>
+          <strong>Smart PWD ID</strong>
+          <small>Account registration</small>
+        </span>
+      </a>
+
+      <!-- Heading -->
+      <div class="auth-heading">
+        <span class="eyebrow">CREATE ACCOUNT</span>
+        <h1 id="register-title">Register</h1>
+        <p>Create your account to access Smart PWD ID digital services.</p>
+      </div>
+
+      <!-- REGISTRATION FORM -->
+      <form id="register" novalidate>
+
+        <!-- First Name -->
+        <div class="form-group">
+          <label for="firstName">First name</label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            autocomplete="given-name"
+            placeholder="Enter first name"
+            required
+          >
+          <small
+            id="firstNameError"
+            class="form-error"
+            role="alert"
+          ></small>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <label for="lastName">Last name</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            autocomplete="family-name"
+            placeholder="Enter last name"
+            required
+          >
+          <small
+            id="lastNameError"
+            class="form-error"
+            role="alert"
+          ></small>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="regEmail">Email address</label>
+          <input
+            id="regEmail"
+            name="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            placeholder="you@example.com"
+            required
+          >
+          <small
+            id="emailError"
+            class="form-error"
+            role="alert"
+          ></small>
+        </div>
+
+        <!-- Mobile -->
+        <div class="form-group">
+          <label for="mobile">Mobile number</label>
+          <input
+            id="mobile"
+            name="mobile"
+            type="tel"
+            autocomplete="tel"
+            inputmode="tel"
+            placeholder="09XX XXX XXXX"
+            required
+          >
+          <small
+            id="mobileError"
+            class="form-error"
+            role="alert"
+          ></small>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="regPass">Password</label>
+          <div class="password-field">
+            <input
+              id="regPass"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              minlength="12"
+              placeholder="Create a password"
+              required
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              data-password-toggle="regPass"
+              aria-label="Show password"
+              aria-pressed="false"
+            >Show</button>
+          </div>
+          <small class="field-hint">Use at least 12 characters.</small>
+          <small
+            id="passwordError"
+            class="form-error"
+            role="alert"
+          ></small>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="regPass2">Confirm password</label>
+          <div class="password-field">
+            <input
+              id="regPass2"
+              name="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="6"
+              placeholder="Confirm your password"
+              required
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              data-password-toggle="regPass2"
+              aria-label="Show password"
+              aria-pressed="false"
+            >Show</button>
+          </div>
+          <small
+            id="confirmPasswordError"
+            class="form-error"
+            role="alert"
+          ></small>
+        </div>
+
+        <!-- Account Type -->
+        <div class="form-group">
+          <label for="accountType">Account type</label>
+          <select id="accountType" name="accountType" required>
+            <option value="pwd">PWD Cardholder</option>
+            <option value="establishment">Authorized Establishment</option>
+          </select>
+          <small class="field-hint">Choose the account type that matches your role in the Smart PWD ID system.</small>
+        </div>
+
+        <!-- Terms -->
+        <label class="terms">
+          <input type="checkbox" id="terms" required>
+          <span>I agree to the Smart PWD ID <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</span>
+        </label>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn primary full"
+          id="registerButton"
+        >
+          <span id="registerButtonText">Create Account →</span>
+          <span id="registerSpinner" class="login-spinner" aria-hidden="true">⟳</span>
+        </button>
+
+        <!-- Status -->
+        <div
+          id="registerMessage"
+          class="login-message"
+          role="alert"
+          aria-live="polite"
+        ></div>
+
+      </form>
+
+      <!-- FEATURES -->
+      <div class="auth-features">
+        <span>✓ Digital ID</span>
+        <span>✓ QR & NFC Verification</span>
+        <span>✓ Accessibility Controls</span>
+      </div>
+
+      <!-- INFORMATION -->
+      <div class="registration-info">
+        <div>
+          <span aria-hidden="true"><img class="registration-info-icon" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt=""></span>
+          <div>
+            <strong>PWD Cardholder</strong>
+            <p>Access your digital Smart PWD ID, verification history, and benefits.</p>
+          </div>
+        </div>
+        <div>
+          <span aria-hidden="true">🏪</span>
+          <div>
+            <strong>Authorized Establishment</strong>
+            <p>Verify Smart PWD IDs and process eligible transactions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login -->
+      <p class="center">Already registered? <a href="login.html">Sign in</a></p>
+
+      <p class="back-home"><a href="index.html">← Back to Smart PWD ID</a></p>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+    const SUPABASE_PUBLIC_KEY =
+      'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+    window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    });
+
+    function roleTarget(role) {
+      return ({ pwd: 'dashboard.html', verifier: 'verifier.html', admin: 'admin.html' })[role] || 'index.html';
+    }
+
+    async function resolveRedirect(session) {
+      if (!session || !session.user) return 'index.html';
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .limit(1);
+      if (error || !data || !data.length) return 'index.html';
+      return roleTarget(data[0].role);
+    }
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = await resolveRedirect(session);
+        return;
+      }
+
+      const form           = document.getElementById("register");
+      const firstName      = document.getElementById("firstName");
+      const lastName       = document.getElementById("lastName");
+      const email          = document.getElementById("regEmail");
+      const mobile         = document.getElementById("mobile");
+      const password       = document.getElementById("regPass");
+      const confirmPassword = document.getElementById("regPass2");
+      const accountType    = document.getElementById("accountType");
+      const terms          = document.getElementById("terms");
+      const button         = document.getElementById("registerButton");
+      const buttonText     = document.getElementById("registerButtonText");
+      const spinner        = document.getElementById("registerSpinner");
+      const message        = document.getElementById("registerMessage");
+
+      const toggleBtns = document.querySelectorAll('[data-password-toggle]');
+      toggleBtns.forEach(function (btn) {
+        const fieldId = btn.getAttribute('data-password-toggle');
+        const field = document.getElementById(fieldId);
+        if (!btn || !field) return;
+        btn.addEventListener("click", function () {
+          const pressed = btn.getAttribute("aria-pressed") === "true";
+          btn.setAttribute("aria-pressed", String(!pressed));
+          btn.textContent = pressed ? "Show" : "Hide";
+          field.type = pressed ? "password" : "text";
+        });
+      });
+
+      function clearErrors() {
+        document.querySelectorAll(".form-error").forEach(function (element) {
+          element.textContent = "";
+        });
+        message.textContent = "";
+        message.className = "login-message";
+      }
+
+      function error(id, text) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = text;
+      }
+
+      function setLoading(on) {
+        button.disabled = !!on;
+        spinner.classList.toggle("show", !!on);
+        buttonText.textContent = on ? "Creating Account…" : "Create Account →";
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        clearErrors();
+
+        const first         = firstName.value.trim();
+        const last          = lastName.value.trim();
+        const emailValue    = email.value.trim().toLowerCase();
+        const mobileValue   = mobile.value.trim();
+        const passwordValue = password.value;
+        const confirmValue  = confirmPassword.value;
+
+        let valid = true;
+
+        if (!first)                                       { error("firstNameError",       "Please enter your first name.");           valid = false; }
+        if (!last)                                        { error("lastNameError",        "Please enter your last name.");            valid = false; }
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailValue))               { error("emailError",           "Please enter a valid email address.");     valid = false; }
+        const mobilePattern   = /^(09\d{9}|\+639\d{9})$/;
+        const normalizedMobile = mobileValue.replace(/[\s()-]/g, "");
+        if (!mobilePattern.test(normalizedMobile))        { error("mobileError",          "Enter a valid Philippine mobile number."); valid = false; }
+        if (passwordValue.length < 12)                    { error("passwordError",        "Password must contain at least 12 characters."); valid = false; }
+        if (passwordValue !== confirmValue)               { error("confirmPasswordError", "Passwords do not match.");                  valid = false; }
+        if (!terms.checked) {
+          message.textContent = "Please accept the Terms of Service and Privacy Policy.";
+          message.className = "login-message error";
+          valid = false;
+        }
+        if (!valid) return;
+
+        setLoading(true);
+
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: emailValue,
+          password: passwordValue,
+          options: {
+            data: {
+              first_name: first,
+              last_name: last,
+              mobile: normalizedMobile,
+              account_type: accountType.value,
+            },
+          },
+        });
+
+        setLoading(false);
+
+        if (signUpError) {
+          message.textContent = signUpError.message;
+          message.className = "login-message error";
+          password.value = "";
+          confirmPassword.value = "";
+          password.focus();
+          return;
+        }
+
+        if (data && data.user && data.user.id) {
+          const uid = data.user.id;
+          const role =
+            accountType.value === "admin" ? "admin"
+            : accountType.value === "establishment" ? "verifier"
+            : "pwd";
+          try {
+            if (window.localStorage) {
+              try { localStorage.removeItem("spwd_profile_cache"); } catch (_) {}
+            }
+            if (typeof supabase.from === "function") {
+              await supabase.from("profiles").upsert({
+                id: uid,
+                email: emailValue,
+                first_name: first,
+                last_name: last,
+                mobile: normalizedMobile,
+                account_type: accountType.value,
+                role: role,
+                updated_at: new Date().toISOString(),
+              }, { onConflict: "id", ignoreDuplicates: false });
+            }
+          } catch (_) { /* ignore; Supabase Postgres trigger may have written it already */ }
+        }
+
+        if (data.session) {
+          buttonText.textContent = "Account Created ✓";
+          message.textContent = "Your account has been created. Redirecting…";
+          message.className = "login-message success";
+          setTimeout(function () {
+            window.location.href = "dashboard.html";
+          }, 500);
+          return;
+        }
+
+        buttonText.textContent = "Check Your Email";
+        message.textContent = "Registration successful! Please check your email to confirm your account, then sign in.";
+        message.className = "login-message success";
+      });
+
+      confirmPassword.addEventListener("input", function () {
+        const err = document.getElementById("confirmPasswordError");
+        if (this.value && this.value !== password.value)  err.textContent = "Passwords do not match.";
+        else                                               err.textContent = "";
+      });
+
+      firstName.addEventListener("input",      function () { error("firstNameError",       ""); });
+      lastName.addEventListener("input",       function () { error("lastNameError",        ""); });
+      email.addEventListener("input",          function () { error("emailError",           ""); });
+      mobile.addEventListener("input",         function () { error("mobileError",          ""); });
+      password.addEventListener("input",       function () { error("passwordError",        ""); });
+
+    });
+  </script>
+
+  <!-- Global JavaScript -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

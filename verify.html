@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Smart PWD ID QR, NFC, and manual verification center.">
+  <title>Verify ID | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/verify-card.css">
+</head>
+<body>
+  <header class="floating-nav">
+    <nav class="pill-nav">
+      <a class="nav-logo" href="index.html">
+        <img src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#mobile">Mobile App</a>
+        <a class="active" href="verify.html" aria-current="page">Verify</a>
+        <div class="nav-auth-slot" id="navAuthSlot" aria-live="polite"></div>
+      </div>
+      <button class="nav-setting settings-trigger" data-access aria-label="Setting">
+        <img
+          src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=simple%20solid%20black%20gear%20cog%20icon%20white%20background%20flat%20vector&image_size=square_hd"
+          alt="Setting"
+        >
+      </button>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="page">
+
+    <!-- PAGE HEADING -->
+    <div class="heading reveal">
+      <span class="eyebrow">THIRD-PARTY VERIFICATION</span>
+      <h1>Verify a PWD ID</h1>
+      <p>Use QR, NFC, or manual ID lookup. This academic prototype simulates the verification response.</p>
+    </div>
+
+    <!-- VERIFICATION GRID -->
+    <div class="verifygrid">
+
+      <!-- VERIFICATION METHODS -->
+      <section class="panel reveal" aria-labelledby="verification-methods">
+
+        <div class="panelhead">
+          <div>
+            <span class="eyebrow">VERIFICATION METHOD</span>
+            <h2 id="verification-methods">Choose a method</h2>
+          </div>
+          <span class="badge">QR + NFC</span>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs" role="tablist" aria-label="Verification methods">
+          <button
+            type="button"
+            class="tab active"
+            data-tab="qr"
+            role="tab"
+            aria-selected="true"
+            aria-controls="qr"
+            id="qr-tab"
+          ><span aria-hidden="true">▦</span> QR Code</button>
+          <button
+            type="button"
+            class="tab"
+            data-tab="nfc"
+            role="tab"
+            aria-selected="false"
+            aria-controls="nfc"
+            id="nfc-tab"
+          ><span aria-hidden="true">◉</span> NFC Tap</button>
+          <button
+            type="button"
+            class="tab"
+            data-tab="manual"
+            role="tab"
+            aria-selected="false"
+            aria-controls="manual"
+            id="manual-tab"
+          ><span aria-hidden="true">⌕</span> Manual / RFID</button>
+        </div>
+
+        <!-- QR TAB -->
+        <div id="qr" class="tabpane active" role="tabpanel" aria-labelledby="qr-tab">
+          <div id="qr-reader" style="width:100%; border-radius: 14px; overflow: hidden;"></div>
+          <div id="qr-reader-status" class="center" style="margin-top: 16px; font-size: 13px; color: var(--muted);">
+            The QR code scanner will appear here. You may need to grant camera permissions.
+          </div>
+        </div>
+
+        <!-- NFC TAB -->
+        <div id="nfc" class="tabpane" role="tabpanel" aria-labelledby="nfc-tab" hidden>
+          <div class="nfc-area">
+            <div class="nfc" id="nfcIcon" aria-hidden="true">◉</div>
+            <span class="nfc-waves">))))</span>
+          </div>
+          <h2 class="center" id="nfcHeading">Ready for NFC</h2>
+          <p class="center" id="nfcStatus">Your browser might support Web NFC. Click the button to start scanning.</p>
+          <button
+            type="button"
+            class="btn primary full"
+            id="nfcVerifyButton"
+          >
+            <span aria-hidden="true">◉</span>
+            Start NFC Scan
+          </button>
+        </div>
+
+        <!-- MANUAL TAB -->
+        <div id="manual" class="tabpane" role="tabpanel" aria-labelledby="manual-tab" hidden>
+          <p class="center" style="margin-bottom: 16px;">Place your cursor in the input field below, then scan an RFID card. The ID will be entered automatically.</p>
+          <div class="form-group">
+            <label for="pwdId">Enter PWD ID or Scan RFID</label>
+            <input
+              id="pwdId"
+              type="text"
+              placeholder="Scan card or type ID here"
+              autocomplete="off"
+              spellcheck="false"
+              maxlength="50"
+              aria-describedby="idHint"
+            >
+            <small id="idHint">The ID from the scanned card will appear here.</small>
+            <small id="manualError" class="form-error" role="alert"></small>
+          </div>
+          <button
+            type="button"
+            class="btn primary full"
+            data-verify
+            data-method="RFID/Manual"
+          >Verify ID</button>
+        </div>
+
+        <!-- Security note -->
+        <div class="verification-note">
+          <span aria-hidden="true">🔒</span>
+          <p>Only the minimum information needed for verification should be displayed.</p>
+        </div>
+
+      </section>
+
+      <!-- RESULT -->
+      <section id="result" class="panel result reveal is-waiting" aria-live="polite" aria-labelledby="resultTitle">
+
+        <div id="result-content" class="result-state">
+          <div id="result-icon-container"></div>
+        </div>
+        <small id="result-hint" class="result-hint">Start a verification to see the result.</small>
+
+      </section>
+
+    </div>
+
+    <!-- VERIFICATION FLOW -->
+    <section class="verification-flow">
+      <div class="heading">
+        <span class="eyebrow">VERIFICATION FLOW</span>
+        <h2>Simple, secure, accessible.</h2>
+      </div>
+      <div class="flow-grid">
+        <article>
+          <span>01</span>
+          <h3>Scan or tap</h3>
+          <p>Use QR, NFC, or manual lookup to identify the Smart PWD ID.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Validate</h3>
+          <p>Check the ID record, status, and expiration date.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Verify</h3>
+          <p>Display a clear verification result before processing an eligible transaction.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- DISCLAIMER -->
+    <section class="legal-panel">
+      <strong>Academic prototype</strong>
+      <p>This verification page demonstrates the interface and workflow of the proposed Smart PWD ID system. Actual QR/NFC verification must be connected to an authorized backend database and follow applicable Philippine privacy, accessibility, PWD, and issuing-agency requirements.</p>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      // TAB SYSTEM
+      const tabs = document.querySelectorAll(".tab");
+      const panes = document.querySelectorAll(".tabpane");
+      let html5QrcodeScanner; // To hold the scanner instance
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          const target = this.dataset.tab;
+
+          // If switching away from QR tab, try to stop the scanner to release the camera
+          if (target !== 'qr' && html5QrcodeScanner && html5QrcodeScanner.getState() === 2) { // 2 is SCANNING state
+            html5QrcodeScanner.clear().catch(err => {
+              console.error("Failed to clear QR scanner on tab switch.", err);
+            });
+            html5QrcodeScanner = null; // Allow re-initialization
+          }
+
+
+          tabs.forEach(function (item) {
+            const active = item === tab;
+            item.classList.toggle("active", active);
+            item.setAttribute("aria-selected", String(active));
+          });
+
+          panes.forEach(function (pane) {
+            const active = pane.id === target;
+            pane.classList.toggle("active", active);
+            pane.hidden = !active;
+          });
+
+          // If switching to the QR tab, render the scanner if it's not already there
+          if (target === 'qr' && !html5QrcodeScanner) {
+            initializeQrScanner();
+          }
+
+          const manualError = document.getElementById("manualError");
+          if (manualError) manualError.textContent = "";
+        });
+      });
+
+      // VERIFICATION ELEMENTS
+      const resultPanel = document.getElementById("result");
+      const resultHint = document.getElementById("result-hint");
+      const verifyButtons = document.querySelectorAll("[data-verify]");
+      const nfcVerifyButton = document.getElementById("nfcVerifyButton");
+      const manualId = document.getElementById("pwdId");
+      const manualError = document.getElementById("manualError");
+
+      /*
+       * Applicant names, addresses and the LGU slug all come from the database,
+       * so they are escaped before being written into the result markup.
+       */
+      function esc(value) {
+        return String(value === null || value === undefined ? '' : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      // Dates from pwd_applications are sometimes plain strings ("15/06/1990")
+      // and sometimes timestamps, so accept both.
+      function fmtDay(value) {
+        const raw = String(value === null || value === undefined ? '' : value).trim();
+        if (!raw) return '—';
+        if (/^[0-9]{1,4}[/.-][0-9]{1,2}[/.-][0-9]{2,4}$/.test(raw)) return raw;
+        const d = new Date(raw);
+        if (isNaN(d.getTime())) return raw;
+        return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+      }
+
+      /*
+       * Builds the same card design the admin console prints, from the record
+       * the server returned, so a verifier sees the holder's real photo, LGU
+       * background and details rather than the placeholder images used before.
+       */
+      function cardMarkup(account, card) {
+        const c = card || {};
+        const bgStyle = c.bgFront
+          ? ` style="background-image:url('backgrounds/${esc(c.bgFront)}.png')"`
+          : '';
+
+        const photo = c.photoUrl
+          ? `<img src="${esc(c.photoUrl)}" alt="Applicant photo">`
+          : '<span>NO PHOTO<br>ON FILE</span>';
+
+        const signature = c.signatureUrl
+          ? `<img src="${esc(c.signatureUrl)}" alt="Applicant signature">`
+          : '<span>signature here</span>';
+
+        const fullName = `${account.firstName || ''} ${account.lastName || ''}`.trim();
+
+        return `
+          <div class="vcard vcard-front"${bgStyle}>
+            <div class="vcontent">
+              <div class="vleft">
+                <div class="vphoto">${photo}</div>
+                <div class="vsig">
+                  <div class="vsigline">${signature}</div>
+                  SIGNATURE
+                </div>
+              </div>
+              <div class="vfields">
+                <div class="vfield">
+                  <label>ID NO:</label>
+                  <div class="vvalue">${esc(account.idNumber || '—')}</div>
+                </div>
+                <div class="vfield">
+                  <label>NAME:</label>
+                  <div class="vvalue">${esc(fullName.toUpperCase())}</div>
+                </div>
+                <div class="vfield">
+                  <label>TYPE OF DISABILITY:</label>
+                  <div class="vvalue">${esc(c.disabilityType || '—')}</div>
+                </div>
+                <div class="vfield">
+                  <label>DATE OF BIRTH:</label>
+                  <div class="vvalue vsmall">${esc(fmtDay(c.birthdate))}</div>
+                </div>
+                <div class="vfield">
+                  <label>SEX:</label>
+                  <div class="vvalue">${esc(c.sex || '—')}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="vcard vcard-back"${bgStyle}>
+            <div class="vnotice">
+              THE HOLDER OF THIS CARD IS A PERSON WITH DISABILITY AND IS ENTITLED TO ALL BENEFITS AND
+              PRIVILEGES IN ACCORDANCE WITH REPUBLIC ACTS 9442 AND 10754 NON-TRANSFERABLE. VALID FOR 3
+              YEARS.<br>
+              ANY VIOLATION IS PUNISHABLE BY LAW. VALID ANYWHERE IN THE PHILIPPINES.
+            </div>
+            <div class="vbackbox">
+              <div class="vbacktitle">IN CASE OF EMERGENCY, PLEASE NOTIFY:</div>
+              <div class="vbackfields">
+                <div class="vbackfield">Name:<span>${esc(c.emergencyName || '—')}</span></div>
+                <div class="vbackfield">Contact No.:<span>${esc(c.emergencyContact || '—')}</span></div>
+                <div class="vbackfield">Address:<span>${esc(c.address || '—')}</span></div>
+                <div class="vbackfield">Blood type:<span>${esc(c.bloodType || '—')}</span></div>
+                <div class="vbackfield">Date issued:<span>${esc(fmtDay(c.dateIssued))}</span></div>
+                <div class="vbackfield">Valid until:<span>${esc(account.validUntil || '—')}</span></div>
+              </div>
+              <div class="vauth">
+                ____________________________<br>
+                AUTHORIZED SIGNATURE
+              </div>
+            </div>
+          </div>`;
+      }
+
+      // SHOW STATE
+      function showState(state, data = null) {
+        // The panel is a .reveal element: app.js animates it in once and then
+        // stops observing it, so "revealed" has to survive this class reset or
+        // the result stays at opacity 0 and nothing is visible.
+        resultPanel.className = "panel result reveal revealed";
+        resultPanel.classList.add(`is-${state}`);
+        const resultContent = document.getElementById('result-content');
+        
+        let hintText = '';
+        let contentHtml = '<div id="result-icon-container"></div>';
+
+        switch(state) {
+            case 'waiting':
+                hintText = "Start a verification to see the result.";
+                break;
+            case 'loading':
+                hintText = "Verifying ID...";
+                break;
+            case 'success':
+                hintText = "Tap outside the card to verify another ID.";
+                if (data && data.account) {
+                    contentHtml = `
+                        <div class="vresult">
+                            <div class="vhead">
+                                <div class="vtick" aria-hidden="true">
+                                    <span class="vring"></span>
+                                    <span class="vring"></span>
+                                    <svg viewBox="0 0 24 24"><path d="M9.6 16.2 5.4 12l-1.4 1.4 5.6 5.6 12-12-1.4-1.4Z"/></svg>
+                                </div>
+                                <h2 id="resultTitle" class="green">ID Verified</h2>
+                                <p class="vsub">This Smart PWD ID is active and valid.</p>
+                                <div class="vmeta">
+                                    <span class="vpill">Method <b>${esc(data.method || 'Manual')}</b></span>
+                                    <span class="vpill">Valid until <b>${esc(data.account.validUntil || '—')}</b></span>
+                                    <span class="vpill">Checked <b>${esc(new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }))}</b></span>
+                                </div>
+                            </div>
+                            <div id="verifyCard">${cardMarkup(data.account, data.card)}</div>
+                        </div>
+                    `;
+                }
+                break;
+            case 'failed':
+                hintText = "Tap this panel to try again.";
+                contentHtml += `<h2 id="resultTitle" class="red">Verification Failed</h2>`;
+                if (data && data.message) {
+                    contentHtml += `<p>${data.message}</p>`;
+                }
+                break;
+        }
+
+        resultContent.innerHTML = contentHtml;
+
+        if (state === 'waiting') {
+          resultHint.textContent = "Start a verification to see the result.";
+        } else if (state === 'success' || state === 'failed') {
+          resultHint.textContent = "Tap this panel to verify another ID.";
+        } else {
+          resultHint.textContent = " ";
+        }
+      }
+
+      // VALIDATE MANUAL ID
+      function validateManualId() {
+        const value = manualId.value.trim();
+
+        if (!value) {
+          manualError.textContent = "Please enter or scan a PWD ID.";
+          manualId.focus();
+          return false;
+        }
+        manualError.textContent = "";
+        return true;
+      }
+
+      // PERFORM VERIFICATION (SERVER)
+      // `token` is the holder's secret, read back out of a link, a QR code or
+      // an NFC tag. The server refuses a code whose token no longer matches,
+      // which is what makes a photocopied card fail once the ID is reissued.
+      async function performVerification(id, method, token) {
+        showState("loading");
+        try {
+          const payload = { pwdId: id, method: method };
+          const secret = String(token || "").trim();
+          if (secret) payload.token = secret;
+          const response = await fetch('/api/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.message || 'Verification failed');
+          }
+
+          showState('success', result);
+
+        } catch (error) {
+          showState('failed', { message: error.message });
+        }
+      }
+
+      // --- QR SCANNER INITIALIZATION ---
+      // A card's QR and its NFC tag both point at this page, so whatever a
+      // scanner or reader hands back may be a full verification link rather
+      // than a bare ID number. Pull the ID back out of the link when there is
+      // one, and otherwise treat the value as the ID itself.
+      function extractPwdId(raw) {
+        const text = String(raw || "").trim();
+        if (!text) return "";
+        try {
+          const url = new URL(text, window.location.href);
+          const fromUrl = (url.searchParams.get("id") || url.searchParams.get("pwdId") || "").trim();
+          return fromUrl || text;
+        } catch (e) {
+          return text;
+        }
+      }
+
+      // The holder's secret rides in the same link as the ID, under "t".
+      function extractToken(raw) {
+        const text = String(raw || "").trim();
+        if (!text) return "";
+        try {
+          return (new URL(text, window.location.href).searchParams.get("t") || "").trim();
+        } catch (e) {
+          return "";
+        }
+      }
+
+      function initializeQrScanner() {
+        function onScanSuccess(decodedText, decodedResult) {
+          // Stop the scanner and camera.
+          if (html5QrcodeScanner) {
+            html5QrcodeScanner.clear().catch(error => {
+              console.error("Failed to clear html5QrcodeScanner.", error);
+            });
+            html5QrcodeScanner = null; // Nullify to allow re-initialization if needed
+          }
+          performVerification(extractPwdId(decodedText), "QR", extractToken(decodedText));
+        }
+
+        function onScanFailure(error) {
+          // This is called continuously when no QR is found. Better to ignore.
+        }
+
+        html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: { width: 250, height: 250 } }, /* verbose= */ false);
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        document.getElementById('qr-reader-status').style.display = 'none'; // Hide initial message
+      }
+
+      // --- EVENT LISTENERS ---
+
+      // Handle Manual/RFID button
+      verifyButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          const method = this.dataset.method;
+          if (method === "RFID/Manual") { // The QR button was removed, so this only handles Manual/RFID
+            if (validateManualId()) {
+              performVerification(manualId.value.trim(), "Manual", extractToken(manualId.value)); // Log as "Manual" if button is clicked
+            }
+          }
+        });
+      });
+
+      // Handle NFC Verification
+      function initializeNFC() {
+        const nfcStatus = document.getElementById("nfcStatus");
+        const nfcHeading = document.getElementById("nfcHeading");
+
+        if ('NDEFReader' in window) {
+          nfcVerifyButton.addEventListener('click', async () => {
+            showState('loading');
+            nfcStatus.textContent = 'Ready to scan. Tap an NFC tag near your device.';
+            try {
+              const ndef = new NDEFReader();
+              await ndef.scan();
+
+              ndef.addEventListener('reading', ({ message }) => {
+                const textDecoder = new TextDecoder();
+                const rawTag = textDecoder.decode(message.records[0].data);
+                const pwdId = extractPwdId(rawTag);
+                nfcStatus.textContent = `Tag detected. Verifying ID: ${pwdId}`;
+                performVerification(pwdId, 'NFC', extractToken(rawTag));
+              });
+
+              ndef.addEventListener('readingerror', () => {
+                nfcStatus.textContent = 'Error reading NFC tag. Please try again.';
+                showState('failed', { message: 'Could not read NFC tag.' });
+              });
+            } catch (error) {
+              nfcStatus.textContent = `NFC Error: ${error.message}`;
+              showState('failed', { message: 'NFC could not be started.' });
+            }
+          });
+        } else {
+          nfcHeading.textContent = 'NFC Not Supported';
+          nfcStatus.textContent = 'Your browser or device does not support Web NFC. Please use Chrome on an NFC-enabled Android device.';
+          nfcVerifyButton.disabled = true;
+          nfcVerifyButton.textContent = 'NFC Not Available';
+        }
+      }
+      initializeNFC();
+
+      // VERIFY AGAIN
+      function resetVerification() {
+        showState("waiting");
+        manualId.value = "";
+        manualError.textContent = "";
+        const qrTab = document.querySelector('[data-tab="qr"]');
+        if (qrTab) qrTab.click();
+      }
+      // Clicking the result panel starts a new check, but the card is now large
+      // enough to be read and hovered, so clicks inside it must not reset it.
+      resultPanel.addEventListener("click", function(e) {
+        if (e.target.closest('#verifyCard') || e.target.closest('.vhead')) return;
+        if (this.classList.contains('is-success') || this.classList.contains('is-failed')) {
+          resetVerification();
+        }
+      });
+
+      // Handle RFID reader input (emulating a keyboard)
+      manualId.addEventListener("keydown", function(e) {
+        // RFID readers often send an "Enter" keypress after the ID
+        if (e.key === "Enter") {
+          e.preventDefault(); // Prevent default form submission
+          if (validateManualId()) {
+            performVerification(manualId.value.trim(), "RFID", extractToken(manualId.value)); // Log as "RFID"
+          }
+        }
+      });
+
+      /*
+       * A card's QR code and NFC tag both carry the same link:
+       *   verify.html?id=<PWD ID>&t=<secret>
+       * The secret is what makes the code unforgeable, and it is replaced every
+       * time an admin approves or rejects the application — so a link printed
+       * from an older card stops working. Open the link and verify straight
+       * away, without starting the camera: someone who just tapped a tag on
+       * their phone should land on the result, not on a permission prompt.
+       * Without an id we behave as before and open the QR scanner, since that
+       * is the default tab.
+       */
+      const linkParams = new URLSearchParams(window.location.search);
+      const linkId = (linkParams.get("id") || linkParams.get("pwdId") || "").trim();
+      const linkMethod = (linkParams.get("method") || "").trim().toUpperCase();
+
+      if (linkId) {
+        // Show the manual pane so the scanned ID number is visible next to the result.
+        const manualTab = document.querySelector('[data-tab="manual"]');
+        if (manualTab) manualTab.click();
+        manualId.value = linkId;
+        performVerification(linkId, linkMethod === "NFC" ? "NFC" : "QR", linkParams.get("t"));
+      } else if (linkMethod === "NFC") {
+        // verifier.html links here with ?method=nfc — open on the NFC tab.
+        const nfcTab = document.querySelector('[data-tab="nfc"]');
+        if (nfcTab) nfcTab.click();
+      } else {
+        // Initialize the QR scanner on page load since it's the default tab
+        initializeQrScanner();
+      }
+
+    });
+  </script>
+
+  <!-- Global JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Smart PWD ID authorized establishment verification dashboard.">
+  <title>Verifier Dashboard | Smart PWD ID</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="top">
+
+    <a class="brand" href="index.html" aria-label="Smart PWD ID Home">
+      <img class="logo" src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=international%20access%20wheelchair%20symbol%20black%20silhouette%20white%20background%20flat%20vector&image_size=square_hd" alt="Smart PWD ID">
+      <span>
+        <strong>Smart PWD ID</strong>
+        <small>Establishment Portal</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="verify.html">Verify</a>
+      <a class="active" href="verifier.html" aria-current="page">Dashboard</a>
+      <a href="index.html">Home</a>
+    </nav>
+
+    <button
+      type="button"
+      class="access settings-trigger"
+      data-access
+      aria-label="Open settings"
+    >
+      <span aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </button>
+
+  </header>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="profile">
+        <div class="photo" aria-hidden="true">🏪</div>
+        <b>Authorized Partner</b>
+        <small>Verifier Account</small>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Verifier navigation">
+
+        <a
+          href="verifier.html"
+          class="selected"
+          aria-current="page"
+        >
+          <span aria-hidden="true">▦</span>
+          <span>Overview</span>
+        </a>
+
+        <a href="verify.html">
+          <span aria-hidden="true">⌁</span>
+          <span>Verify PWD ID</span>
+        </a>
+
+        <a href="verifier-transactions.html">
+          <span aria-hidden="true">◷</span>
+          <span>Transactions</span>
+        </a>
+
+        <a href="verifier-reports.html">
+          <span aria-hidden="true">▤</span>
+          <span>Reports</span>
+        </a>
+
+        <button
+          type="button"
+          class="sidebar-button"
+          data-access
+        >
+          <span aria-hidden="true">⚙</span>
+          <span>Settings</span>
+        </button>
+
+        <a href="index.html" class="sign-out">
+          <span aria-hidden="true">↪</span>
+          <span>Sign out</span>
+        </a>
+
+      </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <section class="dash">
+
+      <!-- HEADER -->
+      <div class="dashhead">
+        <div>
+          <span class="eyebrow">ESTABLISHMENT PORTAL</span>
+          <h1>Verification Center</h1>
+          <p>Process PWD eligibility verification securely.</p>
+        </div>
+        <a class="btn primary" href="verify.html">
+          <span aria-hidden="true">+</span>
+          New Verification
+        </a>
+      </div>
+
+      <!-- STATISTICS -->
+      <section class="stats" aria-label="Verification statistics">
+
+        <article class="stat-card">
+          <small>TODAY</small>
+          <strong>38</strong>
+          <p>Verifications</p>
+        </article>
+
+        <article class="stat-card">
+          <small>VALID</small>
+          <strong class="green">36</strong>
+          <p>Successful</p>
+        </article>
+
+        <article class="stat-card">
+          <small>FLAGGED</small>
+          <strong class="red">2</strong>
+          <p>Needs review</p>
+        </article>
+
+        <article class="stat-card">
+          <small>SUCCESS RATE</small>
+          <strong>94.7%</strong>
+          <p>Today's verification rate</p>
+        </article>
+
+      </section>
+
+      <!-- QUICK VERIFICATION -->
+      <section class="panel verification-launch">
+
+        <div class="panelhead">
+          <div>
+            <span class="eyebrow">FAST VERIFICATION</span>
+            <h3>Verify a Smart PWD ID</h3>
+          </div>
+          <span class="badge">QR + NFC</span>
+        </div>
+
+        <p>Scan a QR code or use NFC to verify the cardholder's eligibility.</p>
+
+        <div class="verification-actions">
+
+          <a href="verify.html?method=qr" class="verify-action">
+            <span class="verify-icon" aria-hidden="true">▦</span>
+            <span>
+              <strong>Scan QR</strong>
+              <small>Verify using QR code</small>
+            </span>
+            <span aria-hidden="true">→</span>
+          </a>
+
+          <a href="verify.html?method=nfc" class="verify-action">
+            <span class="verify-icon" aria-hidden="true">◉</span>
+            <span>
+              <strong>Tap NFC</strong>
+              <small>Verify using NFC</small>
+            </span>
+            <span aria-hidden="true">→</span>
+          </a>
+
+        </div>
+
+      </section>
+
+      <!-- RECENT VERIFICATIONS -->
+      <section class="panel">
+
+        <div class="panelhead">
+          <div>
+            <span class="eyebrow">ACTIVITY</span>
+            <h3>Recent verifications</h3>
+          </div>
+          <a href="verifier-transactions.html" class="view-all">View all →</a>
+        </div>
+
+        <div class="table-wrapper">
+
+          <table>
+            <caption>Recent verification activity</caption>
+            <thead>
+              <tr>
+                <th scope="col">Reference</th>
+                <th scope="col">Method</th>
+                <th scope="col">Category</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td>
+                  <strong>VER-8A21</strong>
+                  <small class="table-date">Aug 12, 2026</small>
+                </td>
+                <td>
+                  <span class="method qr-method">QR</span>
+                </td>
+                <td>Pharmacy</td>
+                <td>
+                  <span class="badge">Verified</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>VER-7C11</strong>
+                  <small class="table-date">Aug 11, 2026</small>
+                </td>
+                <td>
+                  <span class="method nfc-method">NFC</span>
+                </td>
+                <td>Restaurant</td>
+                <td>
+                  <span class="badge">Verified</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <strong>VER-6F02</strong>
+                  <small class="table-date">Aug 11, 2026</small>
+                </td>
+                <td>
+                  <span class="method qr-method">QR</span>
+                </td>
+                <td>Transport</td>
+                <td>
+                  <span class="warning">Review</span>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+        </div>
+
+      </section>
+
+      <!-- VERIFICATION STATUS -->
+      <section class="dashgrid">
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <div>
+              <span class="eyebrow">SECURITY</span>
+              <h3>Verification security</h3>
+            </div>
+            <span class="badge">Protected</span>
+          </div>
+
+          <div
+            class="progress"
+            role="progressbar"
+            aria-label="Verification security"
+            aria-valuenow="98"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <i style="width:98%;"></i>
+          </div>
+
+          <p>Verification monitoring is operating normally. Suspicious activity is automatically marked for review.</p>
+
+        </section>
+
+        <section class="panel">
+
+          <div class="panelhead">
+            <div>
+              <span class="eyebrow">VERIFICATION</span>
+              <h3>Before processing</h3>
+            </div>
+          </div>
+
+          <ul class="check-list">
+            <li>
+              <span aria-hidden="true">✓</span>
+              Confirm the PWD ID is active.
+            </li>
+            <li>
+              <span aria-hidden="true">✓</span>
+              Check the expiration date.
+            </li>
+            <li>
+              <span aria-hidden="true">✓</span>
+              Confirm the verification result.
+            </li>
+            <li>
+              <span aria-hidden="true">✓</span>
+              Do not expose unnecessary personal data.
+            </li>
+          </ul>
+
+        </section>
+
+      </section>
+
+      <!-- NOTICE -->
+      <section class="security-notice">
+        <div class="security-icon" aria-hidden="true">✓</div>
+        <div>
+          <strong>Secure verification</strong>
+          <p>Only use Smart PWD ID verification for authorized transactions and follow applicable privacy and establishment policies.</p>
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="src/api-client.js"></script>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://fvyinioymlegzfhrahbt.supabase.co';
+      var SUPABASE_ANON_KEY =
+        'sb_publishable_dKUs94y6AVkpr3LobPq1eQ_48Oeu-i7';
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+      }
+    })();
+  </script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+
+      // ----- AUTH GUARD: must be signed in as verifier or admin -----
+      const user = await SmartPWDAuth.requireAuth(["verifier", "admin"]);
+      if (!user) return;
+
+      // ----- SIGN OUT -----
+      const signOutLink = document.querySelector(".sign-out");
+      if (signOutLink) {
+        signOutLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          SmartPWDAuth.logoutUser();
+          window.location.href = "login.html";
+        });
+      }
+
+      // ----- PROFILE / GREETING -----
+      const profileName = document.querySelector(".sidebar .profile b");
+      if (profileName) profileName.textContent = (user.firstName || "") + " " + (user.lastName || "");
+
+      const welcome = document.querySelector(".dashhead h1");
+      if (welcome) welcome.textContent = "Good day, " + (user.firstName || "Verifier") + ".";
+
+      // ACTIVE SIDEBAR
+      const currentPage = window.location.pathname.split("/").pop() || "verifier.html";
+
+      document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
+        const page = link.getAttribute("href");
+        if (page === currentPage) {
+          link.classList.add("selected");
+        } else {
+          link.classList.remove("selected");
+        }
+      });
+
+      // TABLE ROW INTERACTION
+      document.querySelectorAll(".table-wrapper tbody tr").forEach(function (row) {
+        row.setAttribute("tabindex", "0");
+        row.setAttribute("role", "button");
+
+        row.addEventListener("click", function () {
+          const reference = row.querySelector("td strong");
+          if (!reference) return;
+          alert("Viewing details for verification: " + reference.textContent.trim());
+        });
+
+        row.addEventListener("keydown", function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            this.click();
+          }
+        });
+      });
+
+    });
+  </script>
+
+  <!-- Global JavaScript -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
